@@ -133,7 +133,7 @@ const findSortedField = (field: string) => {
 }
 
 const exportAsCSV = () => {
-  const columns = props.columns.filter(c => !c.noExport)
+  const columns = props.columns.filter((c) => !c.noExport)
   const headers = columns.map((c) => c.field).join(';')
   const rows = sortedInternalRows.value
     .map((r) => {
@@ -221,7 +221,12 @@ const navLastPage = () => {
             :class="{ shrink: column.shrink }"
           >
             <div class="modern-table-cell-content">
-              <slot :name="column.field" :field="column.field" :value="row[column.field]" :row="row">
+              <slot
+                :name="column.field"
+                :field="column.field"
+                :value="row[column.field]"
+                :row="row"
+              >
                 {{ row[column.field] }}
               </slot>
             </div>

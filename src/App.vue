@@ -35,12 +35,12 @@ const showRow = (id: string | number) => {
       :disable-sorting="disableSorting"
       v-model:checked-row-keys="checkedRowKeys"
     >
-      <template #id="{value}">
+      <template #id="{ value }">
         <div class="test">
           {{ value }}
         </div>
       </template>
-      <template #actions="{row}">
+      <template #actions="{ row }">
         <button @click="deleteRow(row.id)">delete</button>
         <button @click="editRow(row.id)">edit</button>
         <button @click="showRow(row.id)">show</button>
@@ -60,7 +60,7 @@ main {
   padding: 1rem;
 }
 .test {
-  padding: .5rem;
+  padding: 0.5rem;
   border-radius: 1rem;
   background-color: lightgreen;
   display: grid;
