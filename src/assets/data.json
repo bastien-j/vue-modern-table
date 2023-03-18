@@ -3,7 +3,7 @@
     { "field": "id", "label": "ID", "sortable": true, "shrink": true },
     { "field": "name", "label": "Name", "sortable": true },
     { "field": "date", "label": "Date" },
-    { "field": "actions", "label": "Actions", "noExport": true }
+    { "field": "actions", "label": "Actions", "noExport": true, "shrink": true }
   ],
   "rows": [
     { "key": "0", "id": 0, "name": "Robert De Niro", "date": "August 17, 1943" },

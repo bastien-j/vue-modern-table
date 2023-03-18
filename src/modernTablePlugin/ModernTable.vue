@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import type { TableColumn, TableRow } from './types'
+import '@material-design-icons/font/filled.css'
 
 const availablePaginationLengths = [5, 10, 15]
 
