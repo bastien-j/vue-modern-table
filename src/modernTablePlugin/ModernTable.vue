@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
-import type { TableColumn, TableRow } from './types'
+import { computed, inject, ref, watch } from 'vue'
+import { injectionKey, type TableColumn, type TableRow } from './types'
 import '@material-design-icons/font/filled.css'
 
-const availablePaginationLengths = [5, 10, 15]
+const availablePageLengths = [5, 10, 15]
 
 const props = defineProps({
   columns: {
@@ -14,21 +14,9 @@ const props = defineProps({
     type: Array<TableRow>,
     default: () => []
   },
-  enableCheckbox: {
-    type: Boolean,
-    default: false
-  },
-  enableFilter: {
-    type: Boolean,
-    default: false
-  },
-  enablePagination: {
-    type: Boolean,
-    default: false
-  },
-  disableSorting: {
-    type: Boolean,
-    default: false
+  options: {
+    type: Object,
+    default: () => ({})
   },
   checkedRowKeys: {
     type: Array<TableRow['key']>,
@@ -37,63 +25,28 @@ const props = defineProps({
 })
 const emits = defineEmits(['update:checkedRowKeys'])
 
-const sortedFields = ref<{ field: string; sort: 'ASC' | 'DESC' }[]>([])
+const globalOptions = inject(injectionKey)
+const options = computed(() => ({
+  ...globalOptions,
+  ...props.options
+}))
+
+// Filtering
 const filterValue = ref('')
-const checkedRowKeys = ref(props.checkedRowKeys)
-const currentPage = ref(0)
-const selectedPaginationLength = ref(availablePaginationLengths[0])
-
-const paginationStart = computed(() => currentPage.value * selectedPaginationLength.value)
-const paginationEnd = computed(() => paginationStart.value + selectedPaginationLength.value)
-const lastPage = computed(() =>
-  Math.floor(internalRows.value.length / selectedPaginationLength.value)
+const filteredRows = computed(() =>
+  props.rows
+    .slice()
+    .filter((r) =>
+      options.value.enableFiltering
+        ? Object.entries(r).some(
+            ([, value]) =>
+              typeof value === 'string' &&
+              value.toLowerCase().includes(filterValue.value.toLowerCase())
+          )
+        : true
+    )
 )
-
-const internalRows = computed(() => {
-  return props.rows.slice().filter((r) => {
-    if (!props.enableFilter) return true
-    const filter = filterValue.value.toLowerCase()
-    for (const k of Object.keys(r)) {
-      const value = r[k]
-      if (typeof value === 'string' && value.toLowerCase().includes(filter)) return true
-    }
-    return false
-  })
-})
-const sortedInternalRows = computed(() => {
-  const sortedRows = internalRows.value.slice()
-  if (props.disableSorting) return sortedRows
-  for (const field of sortedFields.value) {
-    sortedRows.sort((a, b) => {
-      const aField = a[field.field]
-      const bField = b[field.field]
-      if (field.sort === 'ASC') return aField > bField ? 1 : aField < bField ? -1 : 0
-      return aField > bField ? -1 : aField < bField ? 1 : 0
-    })
-  }
-  return sortedRows
-})
-const paginatedInternalRows = computed(() =>
-  props.enablePagination
-    ? sortedInternalRows.value.slice(paginationStart.value, paginationEnd.value)
-    : sortedInternalRows.value
-)
-const allRowsChecked = computed(() => {
-  if (!checkedRowKeys.value.length || checkedRowKeys.value.length !== internalRows.value.length)
-    return false
-  for (const r of internalRows.value) {
-    if (!checkedRowKeys.value.includes(r.key)) return false
-  }
-  return true
-})
-
-watch(selectedPaginationLength, () => {
-  if (props.enablePagination && currentPage.value > lastPage.value) navLastPage()
-})
-watch(checkedRowKeys, (newValue) => {
-  emits('update:checkedRowKeys', newValue)
-})
-watch(internalRows, (newValue) => {
+watch(filteredRows, (newValue) => {
   const checkedKeys = [...checkedRowKeys.value]
   for (const k in checkedKeys) {
     const index = parseInt(k)
@@ -103,52 +56,55 @@ watch(internalRows, (newValue) => {
       if (keyIndex >= 0) checkedRowKeys.value.splice(keyIndex, 1)
     }
   }
-  if (props.enablePagination && currentPage.value > lastPage.value) navLastPage()
+  if (options.value.enablePagination && currentPage.value > lastPage.value) navLastPage()
 })
 
-const toggleSelectAll = (select: boolean) => {
-  if (select) checkedRowKeys.value = sortedInternalRows.value.map((r) => r.key)
-  else checkedRowKeys.value = []
-}
-
+// Sorting
+const sortedFields = ref<{ field: string; sort: 'ASC' | 'DESC' }[]>([])
+const sortedRows = computed(() => {
+  const sorted = filteredRows.value.slice()
+  if (options.value.enableSorting) {
+    sortedFields.value.map(({ field, sort }) => {
+      sorted.sort((a, b) => {
+        if (sort === 'ASC') return a[field] > b[field] ? 1 : a[field] < b[field] ? -1 : 0
+        return a[field] > b[field] ? -1 : a[field] < b[field] ? 1 : 0
+      })
+    })
+  }
+  return sorted
+})
 const sortField = (field: string) => {
-  if (!isFieldSorted(field)) {
+  const fieldIndex = findSortedFieldIndex(field)
+  if (fieldIndex < 0) {
     sortedFields.value.unshift({
       field,
       sort: 'ASC'
     })
     return
   }
-  const existingIndex = sortedFields.value.findIndex((f) => f.field === field)
-  if (existingIndex < 0) return
-  const existing = sortedFields.value[existingIndex]
+  const existing = sortedFields.value[fieldIndex]
   if (existing.sort === 'ASC') existing.sort = 'DESC'
-  else sortedFields.value.splice(existingIndex, 1)
+  else sortedFields.value.splice(fieldIndex, 1)
 }
+const findSortedFieldIndex = (field: string) =>
+  sortedFields.value.findIndex((f) => f.field === field)
+const findSortedField = (field: string) => sortedFields.value.find((f) => f.field === field)
+const isFieldSorted = (field: string) => findSortedFieldIndex(field) >= 0
 
-const isFieldSorted = (field: string) =>
-  sortedFields.value.find((f) => f.field === field) !== undefined
-
-const findSortedField = (field: string) => {
-  return sortedFields.value.find((f) => f.field === field)
-}
-
-const exportAsCSV = () => {
-  const columns = props.columns.filter((c) => !c.noExport)
-  const headers = columns.map((c) => c.field).join(';')
-  const rows = sortedInternalRows.value
-    .map((r) => {
-      return columns.map((c) => r[c.field]).join(';')
-    })
-    .join('\n')
-  const csvContent = headers.concat('\n', rows)
-
-  const linkEl = document.createElement('a')
-  linkEl.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csvContent)
-  linkEl.download = 'export.csv'
-  linkEl.click()
-}
-
+// Pagination
+const currentPage = ref(0)
+const selectedPageLength = ref(availablePageLengths[0])
+const pageStart = computed(() => currentPage.value * selectedPageLength.value)
+const pageEnd = computed(() => pageStart.value + selectedPageLength.value)
+const lastPage = computed(() => Math.floor(filteredRows.value.length / selectedPageLength.value))
+const paginatedRows = computed(() =>
+  options.value.enablePagination
+    ? sortedRows.value.slice(pageStart.value, pageEnd.value)
+    : sortedRows.value
+)
+watch(selectedPageLength, () => {
+  if (options.value.enablePagination && currentPage.value > lastPage.value) navLastPage()
+})
 const navFirstPage = () => {
   if (!currentPage.value) return
   currentPage.value = 0
@@ -165,12 +121,44 @@ const navLastPage = () => {
   if (currentPage.value === lastPage.value) return
   currentPage.value = lastPage.value
 }
+
+// Checkbox
+const checkedRowKeys = ref(props.checkedRowKeys)
+const allRowsChecked = computed(() =>
+  !checkedRowKeys.value.length || checkedRowKeys.value.length !== filteredRows.value.length
+    ? false
+    : filteredRows.value.every((r) => checkedRowKeys.value.includes(r.key))
+)
+watch(checkedRowKeys, (newValue) => {
+  emits('update:checkedRowKeys', newValue)
+})
+const toggleSelectAll = (select: boolean) => {
+  if (select) checkedRowKeys.value = sortedRows.value.map((r) => r.key)
+  else checkedRowKeys.value = []
+}
+
+// Actions
+const exportAsCSV = () => {
+  const columns = props.columns.filter((c) => !c.noExport)
+  const headers = columns.map((c) => c.field).join(';')
+  const rows = sortedRows.value
+    .map((r) => {
+      return columns.map((c) => r[c.field]).join(';')
+    })
+    .join('\n')
+  const csvContent = headers.concat('\n', rows)
+
+  const linkEl = document.createElement('a')
+  linkEl.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csvContent)
+  linkEl.download = 'export.csv'
+  linkEl.click()
+}
 </script>
 
 <template>
   <div class="modern-table">
     <div class="modern-table-before">
-      <div v-if="enableFilter" class="modern-table-filter">
+      <div v-if="options.enableFiltering" class="modern-table-filter">
         <input type="text" v-model="filterValue" />
       </div>
       <div class="modern-table-actions">
@@ -179,7 +167,7 @@ const navLastPage = () => {
     </div>
     <div class="modern-table-table">
       <div class="modern-table-row modern-table-header">
-        <div v-if="enableCheckbox" class="modern-table-cell shrink">
+        <div v-if="options.enableCheckbox" class="modern-table-cell shrink">
           <input
             type="checkbox"
             :checked="allRowsChecked"
@@ -195,7 +183,7 @@ const navLastPage = () => {
           <div class="modern-table-cell-content">
             {{ column.label }}
             <button
-              v-if="!disableSorting && column.sortable"
+              v-if="options.enableSorting && column.sortable"
               class="modern-table-sort-button"
               @click="sortField(column.field)"
             >
@@ -211,8 +199,8 @@ const navLastPage = () => {
         </div>
       </div>
       <div class="modern-table-body">
-        <div v-for="row in paginatedInternalRows" :key="row.key" class="modern-table-row">
-          <div v-if="enableCheckbox" class="modern-table-cell shrink">
+        <div v-for="row in paginatedRows" :key="row.key" class="modern-table-row">
+          <div v-if="options.enableCheckbox" class="modern-table-cell shrink">
             <input type="checkbox" :value="row.key" v-model="checkedRowKeys" />
           </div>
           <div
@@ -235,18 +223,18 @@ const navLastPage = () => {
         </div>
       </div>
     </div>
-    <div v-if="enablePagination" class="modern-table-pagination">
+    <div v-if="options.enablePagination" class="modern-table-pagination">
       <div class="modern-table-pagination-length">
         Items per page :
-        <select v-model="selectedPaginationLength">
-          <option v-for="length of availablePaginationLengths" :key="length" :value="length">
+        <select v-model="selectedPageLength">
+          <option v-for="length of availablePageLengths" :key="length" :value="length">
             {{ length }}
           </option>
         </select>
       </div>
       <div class="modern-table-pagination-current">
-        {{ Math.min(paginationStart + 1, internalRows.length) }} -
-        {{ Math.min(paginationEnd, internalRows.length) }} / {{ internalRows.length }}
+        {{ Math.min(pageStart + 1, filteredRows.length) }} -
+        {{ Math.min(pageEnd, filteredRows.length) }} / {{ filteredRows.length }}
       </div>
       <div class="modern-table-pagination-actions">
         <button @click="navFirstPage()" :disabled="!currentPage">

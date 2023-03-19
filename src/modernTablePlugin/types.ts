@@ -1,6 +1,11 @@
 import type ModernTable from './ModernTable.vue'
 
-export type PluginOptions = object
+export type PluginOptions = Partial<{
+  enableCheckbox: boolean
+  enableFiltering: boolean
+  enablePagination: boolean
+  enableSorting: boolean
+}>
 export type TableColumn = {
   label: string
   field: string
