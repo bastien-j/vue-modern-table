@@ -1,14 +1,8 @@
 <script setup lang="ts">
 import { computed, inject, ref, watch } from 'vue'
-import { injectionKey, type TableColumn, type TableRow } from './types'
 import '@material-design-icons/font/filled.css'
-import en from './locale/en.json'
-import fr from './locale/fr.json'
-
-const locales = {
-  en,
-  fr
-}
+import { injectionKey, type PluginOptions, type TableColumn, type TableRow } from './types'
+import { useTranslate } from './composables/translate'
 
 const props = defineProps({
   columns: {
@@ -30,39 +24,25 @@ const props = defineProps({
 })
 const emits = defineEmits(['update:checkedRowKeys'])
 
-const globalOptions = inject(injectionKey)
+const globalOptions = inject(injectionKey) as PluginOptions
 const options = computed(() => ({
   ...globalOptions,
   ...props.options
 }))
-const trans = (key: keyof typeof fr) => locales[options.value.locale ?? 'fr'][key]
+const { trans } = useTranslate(options.value.locale)
 
 // Filtering
 const filterValue = ref('')
-const filteredRows = computed(() =>
-  props.rows
+const filteredRows = computed(() => {
+  if (!options.value.enableFiltering) return props.rows.slice()
+  return props.rows
     .slice()
     .filter((r) =>
-      options.value.enableFiltering
-        ? Object.values(r).some(
-            (value) =>
-              typeof value === 'string' &&
-              value.toLowerCase().includes(filterValue.value.toLowerCase())
-          )
-        : true
+      Object.values(r).some(
+        (value) =>
+          typeof value === 'string' && value.toLowerCase().includes(filterValue.value.toLowerCase())
+      )
     )
-)
-watch(filteredRows, (newValue) => {
-  const checkedKeys = [...checkedRowKeys.value]
-  for (const k in checkedKeys) {
-    const index = parseInt(k)
-    const checkedKey = checkedKeys[index]
-    if (!newValue.find((r) => r.key === checkedKey)) {
-      const keyIndex = checkedRowKeys.value.findIndex((k) => k === checkedKey)
-      if (keyIndex >= 0) checkedRowKeys.value.splice(keyIndex, 1)
-    }
-  }
-  if (options.value.enablePagination && currentPage.value > lastPage.value) navLastPage()
 })
 
 // Sorting
@@ -104,11 +84,10 @@ const pageLength = computed(() => options.value.pageLength ?? 5)
 const pageStart = computed(() => currentPage.value * pageLength.value)
 const pageEnd = computed(() => pageStart.value + pageLength.value)
 const lastPage = computed(() => Math.floor(filteredRows.value.length / pageLength.value))
-const paginatedRows = computed(() =>
-  options.value.enablePagination
-    ? sortedRows.value.slice(pageStart.value, pageEnd.value)
-    : sortedRows.value
-)
+const paginatedRows = computed(() => {
+  if (!options.value.enablePagination) return sortedRows.value
+  return sortedRows.value.slice(pageStart.value, pageEnd.value)
+})
 watch(pageLength, () => {
   if (options.value.enablePagination && currentPage.value > lastPage.value) navLastPage()
 })
@@ -136,6 +115,18 @@ const allRowsChecked = computed(() =>
     ? false
     : filteredRows.value.every((r) => checkedRowKeys.value.includes(r.key))
 )
+watch(filteredRows, (newValue) => {
+  const checkedKeys = [...checkedRowKeys.value]
+  for (const k in checkedKeys) {
+    const index = parseInt(k)
+    const checkedKey = checkedKeys[index]
+    if (!newValue.find((r) => r.key === checkedKey)) {
+      const keyIndex = checkedRowKeys.value.findIndex((k) => k === checkedKey)
+      if (keyIndex >= 0) checkedRowKeys.value.splice(keyIndex, 1)
+    }
+  }
+  if (options.value.enablePagination && currentPage.value > lastPage.value) navLastPage()
+})
 watch(checkedRowKeys, (newValue) => {
   emits('update:checkedRowKeys', newValue)
 })

@@ -1,5 +1,5 @@
 import { defineAsyncComponent, type App, type InjectionKey } from 'vue'
-import type { PluginOptions } from './types'
+import type { PluginOptions, TableOptions } from './types'
 import defu from 'defu'
 
 const defaultOptions: PluginOptions = {
@@ -13,7 +13,7 @@ const defaultOptions: PluginOptions = {
 
 export const injectionKey = Symbol() as InjectionKey<PluginOptions>
 
-export function createModernTablePlugin(options: PluginOptions = {}) {
+export function createModernTablePlugin(options: TableOptions = {}) {
   options = defu(options, defaultOptions)
   return (app: App) => {
     app.provide(injectionKey, options)

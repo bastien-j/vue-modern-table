@@ -1,6 +1,14 @@
 import type ModernTable from './ModernTable.vue'
 
-export type PluginOptions = Partial<{
+export type PluginOptions = {
+  enableCheckbox: boolean
+  enableFiltering: boolean
+  enablePagination: boolean
+  enableSorting: boolean
+  locale: 'en' | 'fr'
+  pageLength: number
+}
+export type TableOptions = Partial<{
   enableCheckbox: boolean
   enableFiltering: boolean
   enablePagination: boolean
