@@ -5,6 +5,8 @@ export type PluginOptions = Partial<{
   enableFiltering: boolean
   enablePagination: boolean
   enableSorting: boolean
+  locale: 'en' | 'fr'
+  pageLength: number
 }>
 export type TableColumn = {
   label: string

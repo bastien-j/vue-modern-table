@@ -7,7 +7,8 @@ const tableOptions = ref<PluginOptions>({
   enableCheckbox: false,
   enableFiltering: false,
   enablePagination: true,
-  enableSorting: true
+  enableSorting: true,
+  locale: 'en'
 })
 const checkedRowKeys = ref([])
 
