@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import type { PluginOptions } from './modernTablePlugin/types'
+import type { TableOptions } from './modernTablePlugin/types'
 import data from './assets/data.json'
 
-const tableOptions = ref<PluginOptions>({
+const tableOptions = ref<TableOptions>({
   enableCheckbox: false,
   enableFiltering: false,
   enablePagination: true,
   enableSorting: true,
-  locale: 'en'
+  locale: 'fr',
+  theme: 'light'
 })
 const checkedRowKeys = ref([])
 
@@ -24,7 +25,7 @@ const showRow = (id: string | number) => {
 </script>
 
 <template>
-  <main>
+  <main :class="[tableOptions.theme]">
     <div class="setting">
       <label for="checkbox">Enable checkbox</label>
       <input type="checkbox" id="checkbox" v-model="tableOptions.enableCheckbox" />
@@ -40,6 +41,10 @@ const showRow = (id: string | number) => {
     <div class="setting">
       <label for="sorting">Enable sorting</label>
       <input type="checkbox" id="sorting" v-model="tableOptions.enableSorting" />
+    </div>
+    <div class="setting">
+      <label for="dark">Dark theme</label>
+      <input type="checkbox" id="dark" v-model="tableOptions.theme" :true-value="'dark'" :false-value="'light'" />
     </div>
     <ModernTable
       :columns="data.columns"
@@ -71,7 +76,13 @@ const showRow = (id: string | number) => {
   font-family: sans-serif;
 }
 main {
+  height: 100vh;
   padding: 1rem;
+  transition: 0.25s;
+
+  &.dark {
+    background-color: #333;
+  }
 }
 .setting {
   display: flex;

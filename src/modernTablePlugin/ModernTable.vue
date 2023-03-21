@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { computed, inject, ref, watch } from 'vue'
+import { computed, inject, ref, watch, type PropType } from 'vue'
 import '@material-design-icons/font/filled.css'
 import { injectionKey, type PluginOptions, type TableColumn, type TableRow } from './types'
+import { useFilters } from './composables/filter'
 import { useTranslate } from './composables/translate'
+import vTooltip from './directives/tooltip'
 
 const props = defineProps({
   columns: {
@@ -25,23 +27,25 @@ const props = defineProps({
 const emits = defineEmits(['update:checkedRowKeys'])
 
 const globalOptions = inject(injectionKey) as PluginOptions
-const options = computed(() => ({
+const mergedOptions = computed(() => ({
   ...globalOptions,
   ...props.options
 }))
-const { trans } = useTranslate(options.value.locale)
+const { filterString } = useFilters()
+const { trans } = useTranslate(mergedOptions.value.locale)
 
 // Filtering
 const filterValue = ref('')
 const filteredRows = computed(() => {
-  if (!options.value.enableFiltering) return props.rows.slice()
+  if (!mergedOptions.value.enableFiltering) return props.rows.slice()
   return props.rows
     .slice()
     .filter((r) =>
-      Object.values(r).some(
-        (value) =>
-          typeof value === 'string' && value.toLowerCase().includes(filterValue.value.toLowerCase())
-      )
+      props.columns.filter(c => !c.noSort).some(c => {
+        r.test = 'fd'
+        const value = r[c.field]
+        if (typeof value === 'string') return filterString(value, filterValue)
+      })
     )
 })
 
@@ -49,7 +53,7 @@ const filteredRows = computed(() => {
 const sortedFields = ref<{ field: string; sort: 'ASC' | 'DESC' }[]>([])
 const sortedRows = computed(() => {
   const sorted = filteredRows.value.slice()
-  if (options.value.enableSorting) {
+  if (mergedOptions.value.enableSorting) {
     sortedFields.value.map(({ field, sort }) => {
       sorted.sort((a, b) => {
         if (sort === 'ASC') return a[field] > b[field] ? 1 : a[field] < b[field] ? -1 : 0
@@ -59,7 +63,7 @@ const sortedRows = computed(() => {
   }
   return sorted
 })
-const isColumnSortable = (column: TableColumn) => options.value.enableSorting && column.sortable
+const isColumnSortable = (column: TableColumn) => mergedOptions.value.enableSorting && !column.noSort
 const sortField = (field: string) => {
   const fieldIndex = findSortedFieldIndex(field)
   if (fieldIndex < 0) {
@@ -80,16 +84,16 @@ const isFieldSorted = (field: string) => findSortedFieldIndex(field) >= 0
 
 // Pagination
 const currentPage = ref(0)
-const pageLength = computed(() => options.value.pageLength ?? 5)
+const pageLength = computed(() => mergedOptions.value.pageLength ?? 5)
 const pageStart = computed(() => currentPage.value * pageLength.value)
 const pageEnd = computed(() => pageStart.value + pageLength.value)
 const lastPage = computed(() => Math.floor(filteredRows.value.length / pageLength.value))
 const paginatedRows = computed(() => {
-  if (!options.value.enablePagination) return sortedRows.value
+  if (!mergedOptions.value.enablePagination) return sortedRows.value
   return sortedRows.value.slice(pageStart.value, pageEnd.value)
 })
 watch(pageLength, () => {
-  if (options.value.enablePagination && currentPage.value > lastPage.value) navLastPage()
+  if (mergedOptions.value.enablePagination && currentPage.value > lastPage.value) navLastPage()
 })
 const navFirstPage = () => {
   if (!currentPage.value) return
@@ -125,7 +129,7 @@ watch(filteredRows, (newValue) => {
       if (keyIndex >= 0) checkedRowKeys.value.splice(keyIndex, 1)
     }
   }
-  if (options.value.enablePagination && currentPage.value > lastPage.value) navLastPage()
+  if (mergedOptions.value.enablePagination && currentPage.value > lastPage.value) navLastPage()
 })
 watch(checkedRowKeys, (newValue) => {
   emits('update:checkedRowKeys', newValue)
@@ -154,13 +158,17 @@ const exportAsCSV = () => {
 </script>
 
 <template>
-  <div class="modern-table">
+  <div class="modern-table" :class="[mergedOptions.theme]">
     <div class="modern-table-before">
-      <div v-if="options.enableFiltering" class="modern-table-filter">
+      <div v-if="mergedOptions.enableFiltering" class="modern-table-filter">
         <input type="text" v-model="filterValue" />
       </div>
       <div class="modern-table-actions">
-        <button class="modern-table-button" @click="exportAsCSV()" :title="trans('download-csv')">
+        <button
+          class="modern-table-button"
+          @click="exportAsCSV()"
+          v-tooltip="trans('download-csv')"
+        >
           <span class="material-icons"> file_download </span>
         </button>
       </div>
@@ -169,7 +177,7 @@ const exportAsCSV = () => {
       <div class="modern-table-table">
         <div class="modern-table-row modern-table-header">
           <div
-            v-if="options.enableCheckbox"
+            v-if="mergedOptions.enableCheckbox"
             class="modern-table-cell shrink sortable"
             @click="toggleSelectAll()"
           >
@@ -201,7 +209,7 @@ const exportAsCSV = () => {
         </div>
         <div class="modern-table-body">
           <div v-for="row in paginatedRows" :key="row.key" class="modern-table-row">
-            <div v-if="options.enableCheckbox" class="modern-table-cell shrink">
+            <div v-if="mergedOptions.enableCheckbox" class="modern-table-cell shrink">
               <input type="checkbox" :value="row.key" v-model="checkedRowKeys" />
             </div>
             <div
@@ -224,13 +232,13 @@ const exportAsCSV = () => {
           </div>
         </div>
       </div>
-      <div v-if="options.enablePagination" class="modern-table-pagination">
+      <div v-if="mergedOptions.enablePagination" class="modern-table-pagination">
         <div class="modern-table-pagination-actions modern-table-pagination-previous">
           <button
             class="modern-table-button"
             @click="navFirstPage()"
             :disabled="!currentPage"
-            :title="trans('first-page')"
+            v-tooltip="trans('first-page')"
           >
             <span class="material-icons">first_page</span>
           </button>
@@ -238,7 +246,7 @@ const exportAsCSV = () => {
             class="modern-table-button"
             @click="navPreviousPage()"
             :disabled="!currentPage"
-            :title="trans('previous-page')"
+            v-tooltip="trans('previous-page')"
           >
             <span class="material-icons">navigate_before</span>
           </button>
@@ -252,7 +260,7 @@ const exportAsCSV = () => {
             class="modern-table-button"
             @click="navNextPage()"
             :disabled="currentPage >= lastPage"
-            :title="trans('next-page')"
+            v-tooltip="trans('next-page')"
           >
             <span class="material-icons">navigate_next</span>
           </button>
@@ -260,7 +268,7 @@ const exportAsCSV = () => {
             class="modern-table-button"
             @click="navLastPage()"
             :disabled="currentPage === lastPage"
-            :title="trans('last-page')"
+            v-tooltip="trans('last-page')"
           >
             <span class="material-icons">last_page</span>
           </button>
@@ -273,24 +281,42 @@ const exportAsCSV = () => {
 <style scoped lang="scss">
 .modern-table {
   --transition-duration: 0.25s;
-  --border-radius: 0.5rem;
+  --t-brd-rd: 0.5rem;
+  --t-bg-clr: hsl(0, 0%, 100%);
+  --t-brd-clr: hsl(240, 11%, 93%);
+  --t-bs-clr: var(--t-brd-clr);
+  --t-cell-clr: hsla(0, 0%, 0%, .87);
+  --t-h-hv-bg-clr: hsl(200, 17%, 93%);
+  --t-btn-bg-clr: var(--t-bg-clr);
+  --t-btn-hv-bg-clr: hsl(0, 0%, 91%);
+  --t-btn-act-bg-clr: hsl(0, 0%, 82%);
+  --t-btn-clr: hsl(0, 0%, 31%);
+  --t-btn-dsbld-clr: hsl(0, 0%, 71%);
+  --t-btn-brd-clr: hsl(0, 0%, 83%);
+  --t-pgn-clr: hsl(0, 0%, 50%);
+  --t-tt-bg-clr: hsl(0, 0%, 26%);
+  --t-tt-clr: hsla(0, 0%, 100%, .87);
 
   .modern-table-button {
-    background: none;
-    border: 1px solid lightgray;
-    border-radius: var(--border-radius);
+    background-color: var(--t-bg-clr);
+    border: 1px solid var(--t-btn-brd-clr);
+    border-radius: var(--t-brd-rd);
     display: grid;
     padding: 0.5rem;
-    color: #4e4e4e;
+    color: var(--t-btn-clr);
     transition: var(--transition-duration);
     user-select: none;
 
+    &:disabled {
+      color: var(--t-btn-dsbld-clr);
+    }
+
     &:not(:disabled):hover {
-      background-color: #e9e9e9;
+      background-color: var(--t-btn-hv-bg-clr);
       cursor: pointer;
     }
     &:not(:disabled):active {
-      background-color: #d1d1d1;
+      background-color: var(--t-btn-act-bg-clr);
     }
   }
   .modern-table-before {
@@ -300,10 +326,11 @@ const exportAsCSV = () => {
 
     .modern-table-filter {
       input {
+        transition: var(--transition-duration);
         font-size: 1rem;
         padding: 0.5rem 0.75rem;
-        border: 1px solid lightgray;
-        border-radius: var(--border-radius);
+        border: 1px solid var(--t-btn-brd-clr);
+        border-radius: var(--t-brd-rd);
       }
     }
     .modern-table-actions {
@@ -311,10 +338,12 @@ const exportAsCSV = () => {
     }
   }
   .modern-table-wrapper {
+    background-color: var(--t-bg-clr);
     border-radius: 0.7rem;
     overflow: hidden;
-    border: 1px solid rgb(234, 234, 238);
-    box-shadow: 1px 1px 5px rgb(234, 234, 238);
+    border: 1px solid var(--t-brd-clr);
+    box-shadow: 1px 1px 5px var(--t-bs-clr);
+    transition: var(--transition-duration);
 
     .modern-table-table {
       width: 100%;
@@ -322,9 +351,11 @@ const exportAsCSV = () => {
       border-collapse: collapse;
 
       .modern-table-cell {
+        transition: var(--transition-duration);
         display: table-cell;
         vertical-align: middle;
         padding: 1rem;
+        color: var(--t-cell-clr);
 
         &.shrink {
           width: 0px;
@@ -335,25 +366,27 @@ const exportAsCSV = () => {
         }
       }
       .modern-table-row {
+        transition: var(--transition-duration);
         display: table-row;
 
         &:not(:last-child) {
-          border-bottom: 1px solid rgb(234, 234, 238);
+          border-bottom: 1px solid var(--t-brd-clr);
         }
       }
       .modern-table-header {
-        background-color: rgb(249, 251, 252);
+        transition: var(--transition-duration);
+        background-color: var(--t-bg-clr);
         user-select: none;
 
         .modern-table-cell {
-          color: rgb(88, 88, 88);
-          transition: var(--transition-duration) background-color;
+          color: var(--t-cell-clr);
+          font-weight: bold;
 
           &.sortable {
             cursor: pointer;
 
             &:hover {
-              background-color: rgb(234, 238, 240);
+              background-color: var(--t-h-hv-bg-clr);
             }
             &:not(:hover):not(.sorted) span {
               opacity: 0;
@@ -388,25 +421,57 @@ const exportAsCSV = () => {
       }
     }
     .modern-table-pagination {
+      transition: var(--transition-duration);
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 2rem;
       padding: 1rem;
-      border-top: 1px solid rgb(234, 234, 238);
+      border-top: 1px solid var(--t-brd-clr);
 
       .modern-table-pagination-actions {
         display: flex;
         gap: 1rem;
-
-        button:disabled {
-          color: #b4b4b4;
-        }
       }
       .modern-table-pagination-current {
-        color: gray;
+        transition: var(--transition-duration);
+        color: var(--t-pgn-clr);
       }
     }
+  }
+
+  * {
+    .modern-table-tooltip {
+      position: fixed;
+      white-space: nowrap;
+      padding: .5rem;
+      background-color: var(--t-tt-bg-clr);
+      color: var(--t-tt-clr);
+      border-radius: .4rem;
+      opacity: 0;
+      pointer-events: none;
+      user-select: none;
+      transition: var(--transition-duration);
+    }
+    &:not(:disabled):hover+.modern-table-tooltip {
+      opacity: 1;
+    }
+  }
+
+  &.dark {
+    --t-bg-clr: hsl(0, 0%, 26%);
+    --t-brd-clr: hsl(0, 0%, 40%);
+    --t-bs-clr: transparent;
+    --t-cell-clr: hsla(0, 0%, 100%, .87);
+    --t-h-hv-bg-clr: hsl(0, 0%, 20%);
+    --t-btn-hv-bg-clr: hsl(0, 0%, 22%);
+    --t-btn-act-bg-clr: hsl(0, 0%, 20%);
+    --t-btn-clr: hsl(0, 0%, 69%);
+    --t-btn-dsbld-clr: hsl(0, 0%, 49%);
+    --t-btn-brd-clr: hsl(0, 0%, 43%);
+    --t-pgn-clr: hsl(0, 0%, 66%);
+    --t-tt-bg-clr: hsl(0, 0%, 100%);
+    --t-tt-clr: hsla(0, 0%, 0%, .87);
   }
 }
 </style>
