@@ -174,7 +174,7 @@ const exportAsCSV = () => {
       </div>
     </div>
     <div class="modern-table-wrapper">
-      <div class="modern-table-table">
+      <div class="modern-table-table" :class="{ paginated: mergedOptions.enablePagination }">
         <div class="modern-table-row modern-table-header">
           <div
             v-if="mergedOptions.enableCheckbox"
@@ -207,27 +207,25 @@ const exportAsCSV = () => {
             </div>
           </div>
         </div>
-        <div class="modern-table-body">
-          <div v-for="row in paginatedRows" :key="row.key" class="modern-table-row">
-            <div v-if="mergedOptions.enableCheckbox" class="modern-table-cell shrink">
-              <input type="checkbox" :value="row.key" v-model="checkedRowKeys" />
-            </div>
-            <div
-              v-for="column in columns"
-              :key="column.field"
-              class="modern-table-cell"
-              :class="{ shrink: column.shrink }"
-            >
-              <div class="modern-table-cell-content">
-                <slot
-                  :name="column.field"
-                  :field="column.field"
-                  :value="row[column.field]"
-                  :row="row"
-                >
-                  {{ row[column.field] }}
-                </slot>
-              </div>
+        <div v-for="row in paginatedRows" :key="row.key" class="modern-table-row">
+          <div v-if="mergedOptions.enableCheckbox" class="modern-table-cell shrink">
+            <input type="checkbox" :value="row.key" v-model="checkedRowKeys" />
+          </div>
+          <div
+            v-for="column in columns"
+            :key="column.field"
+            class="modern-table-cell"
+            :class="{ shrink: column.shrink }"
+          >
+            <div class="modern-table-cell-content">
+              <slot
+                :name="column.field"
+                :field="column.field"
+                :value="row[column.field]"
+                :row="row"
+              >
+                {{ row[column.field] }}
+              </slot>
             </div>
           </div>
         </div>
@@ -368,10 +366,10 @@ const exportAsCSV = () => {
       .modern-table-row {
         transition: var(--transition-duration);
         display: table-row;
-
-        &:not(:last-child) {
-          border-bottom: 1px solid var(--t-brd-clr);
-        }
+        border-bottom: 1px solid var(--t-brd-clr);
+      }
+      &:not(.paginated) .modern-table-row:last-child {
+        border-bottom: none;
       }
       .modern-table-header {
         transition: var(--transition-duration);
@@ -427,7 +425,6 @@ const exportAsCSV = () => {
       justify-content: space-between;
       gap: 2rem;
       padding: 1rem;
-      border-top: 1px solid var(--t-brd-clr);
 
       .modern-table-pagination-actions {
         display: flex;

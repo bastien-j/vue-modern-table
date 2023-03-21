@@ -79,6 +79,7 @@ main {
   height: 100vh;
   padding: 1rem;
   transition: 0.25s;
+  overflow: auto;
 
   &.dark {
     background-color: #333;
