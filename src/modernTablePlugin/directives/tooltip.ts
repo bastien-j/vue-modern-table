@@ -42,12 +42,12 @@ const tooltipDirective: Directive = {
       if (vueScope) el.tooltipEl.dataset[vueScope] = ''
       el.after(el.tooltipEl)
       el.__UpdateTooltipHandler__()
-      window.addEventListener('resize', el.__UpdateTooltipHandler__)
+      el.addEventListener('pointerenter', el.__UpdateTooltipHandler__)
     }, 100)
   },
   unmounted: (el: CustomHTMLElement) => {
     if (el.tooltipEl) el.tooltipEl.remove()
-    window.removeEventListener('resize', el.__UpdateTooltipHandler__)
+    el.removeEventListener('pointerenter', el.__UpdateTooltipHandler__)
   }
 }
 
