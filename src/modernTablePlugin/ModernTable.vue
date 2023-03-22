@@ -174,62 +174,66 @@ const exportAsCSV = () => {
       </div>
     </div>
     <div class="modern-table-wrapper">
-      <div class="modern-table-table" :class="{ paginated: mergedOptions.enablePagination }">
-        <div class="modern-table-row modern-table-header">
-          <div
-            v-if="mergedOptions.enableCheckbox"
-            class="modern-table-cell shrink sortable"
-            @click="toggleSelectAll()"
-          >
-            <input type="checkbox" :checked="allRowsChecked" />
-          </div>
-          <div
-            v-for="column in columns"
-            :key="column.field"
-            class="modern-table-cell"
-            :class="{
-              shrink: column.shrink,
-              sortable: isColumnSortable(column),
-              sorted: isFieldSorted(column.field)
-            }"
-            @click="isColumnSortable(column) ? sortField(column.field) : null"
-          >
-            <div class="modern-table-cell-content">
-              {{ column.label }}
-              <template v-if="isColumnSortable(column)">
-                <span
-                  class="material-icons"
-                  :class="{ up: findSortedField(column.field)?.sort === 'DESC' }"
+      <table class="modern-table-table" :class="{ paginated: mergedOptions.enablePagination }">
+        <thead class="modern-table-header">
+          <tr class="modern-table-row">
+            <th
+              v-if="mergedOptions.enableCheckbox"
+              class="modern-table-cell shrink sortable"
+              @click="toggleSelectAll()"
+            >
+              <input type="checkbox" :checked="allRowsChecked" />
+            </th>
+            <th
+              v-for="column in columns"
+              :key="column.field"
+              class="modern-table-cell"
+              :class="{
+                shrink: column.shrink,
+                sortable: isColumnSortable(column),
+                sorted: isFieldSorted(column.field)
+              }"
+              @click="isColumnSortable(column) ? sortField(column.field) : null"
+            >
+              <div class="modern-table-cell-content">
+                {{ column.label }}
+                <template v-if="isColumnSortable(column)">
+                  <span
+                    class="material-icons"
+                    :class="{ up: findSortedField(column.field)?.sort === 'DESC' }"
+                  >
+                    arrow_downward
+                  </span>
+                </template>
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="row in paginatedRows" :key="row.key" class="modern-table-row">
+            <td v-if="mergedOptions.enableCheckbox" class="modern-table-cell shrink">
+              <input type="checkbox" :value="row.key" v-model="checkedRowKeys" />
+            </td>
+            <td
+              v-for="column in columns"
+              :key="column.field"
+              class="modern-table-cell"
+              :class="{ shrink: column.shrink }"
+            >
+              <div class="modern-table-cell-content">
+                <slot
+                  :name="column.field"
+                  :field="column.field"
+                  :value="row[column.field]"
+                  :row="row"
                 >
-                  arrow_downward
-                </span>
-              </template>
-            </div>
-          </div>
-        </div>
-        <div v-for="row in paginatedRows" :key="row.key" class="modern-table-row">
-          <div v-if="mergedOptions.enableCheckbox" class="modern-table-cell shrink">
-            <input type="checkbox" :value="row.key" v-model="checkedRowKeys" />
-          </div>
-          <div
-            v-for="column in columns"
-            :key="column.field"
-            class="modern-table-cell"
-            :class="{ shrink: column.shrink }"
-          >
-            <div class="modern-table-cell-content">
-              <slot
-                :name="column.field"
-                :field="column.field"
-                :value="row[column.field]"
-                :row="row"
-              >
-                {{ row[column.field] }}
-              </slot>
-            </div>
-          </div>
-        </div>
-      </div>
+                  {{ row[column.field] }}
+                </slot>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
       <div v-if="mergedOptions.enablePagination" class="modern-table-pagination">
         <div class="modern-table-pagination-actions modern-table-pagination-previous">
           <button
@@ -345,12 +349,10 @@ const exportAsCSV = () => {
 
     .modern-table-table {
       width: 100%;
-      display: table;
       border-collapse: collapse;
 
       .modern-table-cell {
         transition: var(--transition-duration);
-        display: table-cell;
         vertical-align: middle;
         padding: 1rem;
         color: var(--t-cell-clr);
@@ -365,7 +367,6 @@ const exportAsCSV = () => {
       }
       .modern-table-row {
         transition: var(--transition-duration);
-        display: table-row;
         border-bottom: 1px solid var(--t-brd-clr);
       }
       &:not(.paginated) .modern-table-row:last-child {
@@ -448,7 +449,7 @@ const exportAsCSV = () => {
       opacity: 0;
       pointer-events: none;
       user-select: none;
-      transition: var(--transition-duration);
+      transition: var(--transition-duration) opacity;
     }
     &:not(:disabled):hover+.modern-table-tooltip {
       opacity: 1;
