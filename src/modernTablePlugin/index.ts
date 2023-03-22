@@ -8,7 +8,8 @@ const defaultOptions: PluginOptions = {
   enablePagination: true,
   enableSorting: true,
   locale: 'fr',
-  pageLength: 5
+  pageLength: 5,
+  theme: 'auto'
 }
 
 export const injectionKey = Symbol() as InjectionKey<PluginOptions>

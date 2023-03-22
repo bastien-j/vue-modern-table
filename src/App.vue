@@ -9,7 +9,7 @@ const tableOptions = ref<TableOptions>({
   enablePagination: true,
   enableSorting: true,
   locale: 'fr',
-  theme: 'light'
+  theme: 'auto'
 })
 const checkedRowKeys = ref([])
 
@@ -42,9 +42,16 @@ const showRow = (id: string | number) => {
       <label for="sorting">Enable sorting</label>
       <input type="checkbox" id="sorting" v-model="tableOptions.enableSorting" />
     </div>
-    <div class="setting">
-      <label for="dark">Dark theme</label>
-      <input type="checkbox" id="dark" v-model="tableOptions.theme" :true-value="'dark'" :false-value="'light'" />
+    <div class="">
+      <p>Theme</p>
+      <div class="setting">
+        <label for="auto">auto</label>
+        <input type="radio" id="auto" v-model="tableOptions.theme" value="auto" />
+        <label for="light">light</label>
+        <input type="radio" id="light" v-model="tableOptions.theme" value="light" />
+        <label for="dark">dark</label>
+        <input type="radio" id="dark" v-model="tableOptions.theme" value="dark" />
+      </div>
     </div>
     <ModernTable
       :columns="data.columns"
@@ -52,11 +59,6 @@ const showRow = (id: string | number) => {
       :options="tableOptions"
       v-model:checked-row-keys="checkedRowKeys"
     >
-      <template #id="{ value }">
-        <div class="test">
-          {{ value }}
-        </div>
-      </template>
       <template #actions="{ row }">
         <div class="buttons">
           <button @click="deleteRow(row.id)"><span class="material-icons">delete</span></button>
@@ -78,11 +80,13 @@ const showRow = (id: string | number) => {
 main {
   height: 100vh;
   padding: 1rem;
-  transition: 0.25s;
+  transition: 0.25s background;
   overflow: auto;
 
+  &.auto,
   &.dark {
     background-color: #333;
+    color: hsla(0, 0%, 100%, .87);
   }
 }
 .setting {

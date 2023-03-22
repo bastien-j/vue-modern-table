@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject, ref, watch, type PropType } from 'vue'
+import { computed, inject, ref, watch } from 'vue'
 import '@material-design-icons/font/filled.css'
 import { injectionKey, type PluginOptions, type TableColumn, type TableRow } from './types'
 import { useFilters } from './composables/filter'
@@ -158,7 +158,7 @@ const exportAsCSV = () => {
 </script>
 
 <template>
-  <div class="modern-table" :class="[mergedOptions.theme]">
+  <div class="modern-table" :class="['theme-' + mergedOptions.theme]">
     <div class="modern-table-before">
       <div v-if="mergedOptions.enableFiltering" class="modern-table-filter">
         <input type="text" v-model="filterValue" />
@@ -297,6 +297,7 @@ const exportAsCSV = () => {
   --t-btn-brd-clr: hsl(0, 0%, 83%);
   --t-pgn-clr: hsl(0, 0%, 50%);
   --t-tt-bg-clr: hsl(0, 0%, 26%);
+  --t-tt-brd-clr: var(--t-bg-clr);
   --t-tt-clr: hsla(0, 0%, 100%, .87);
 
   .modern-table-button {
@@ -445,6 +446,7 @@ const exportAsCSV = () => {
       padding: .5rem;
       background-color: var(--t-tt-bg-clr);
       color: var(--t-tt-clr);
+      border: 1px solid var(--t-tt-brd-clr);
       border-radius: .4rem;
       opacity: 0;
       pointer-events: none;
@@ -457,19 +459,25 @@ const exportAsCSV = () => {
   }
 
   &.dark {
-    --t-bg-clr: hsl(0, 0%, 26%);
-    --t-brd-clr: hsl(0, 0%, 40%);
-    --t-bs-clr: transparent;
-    --t-cell-clr: hsla(0, 0%, 100%, .87);
-    --t-h-hv-bg-clr: hsl(0, 0%, 20%);
-    --t-btn-hv-bg-clr: hsl(0, 0%, 22%);
-    --t-btn-act-bg-clr: hsl(0, 0%, 20%);
-    --t-btn-clr: hsl(0, 0%, 69%);
-    --t-btn-dsbld-clr: hsl(0, 0%, 49%);
-    --t-btn-brd-clr: hsl(0, 0%, 43%);
-    --t-pgn-clr: hsl(0, 0%, 66%);
-    --t-tt-bg-clr: hsl(0, 0%, 100%);
-    --t-tt-clr: hsla(0, 0%, 0%, .87);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    &.theme-dark,
+    &.theme-auto {
+      --t-bg-clr: hsl(0, 0%, 26%);
+      --t-brd-clr: hsl(0, 0%, 40%);
+      --t-bs-clr: transparent;
+      --t-cell-clr: hsla(0, 0%, 100%, .87);
+      --t-h-hv-bg-clr: hsl(0, 0%, 20%);
+      --t-btn-hv-bg-clr: hsl(0, 0%, 22%);
+      --t-btn-act-bg-clr: hsl(0, 0%, 20%);
+      --t-btn-clr: hsl(0, 0%, 69%);
+      --t-btn-dsbld-clr: hsl(0, 0%, 49%);
+      --t-btn-brd-clr: hsl(0, 0%, 43%);
+      --t-pgn-clr: hsl(0, 0%, 66%);
+      --t-tt-bg-clr: hsl(0, 0%, 100%);
+      --t-tt-clr: hsla(0, 0%, 0%, .87);
+    }
   }
 }
 </style>

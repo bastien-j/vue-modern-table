@@ -8,7 +8,7 @@ export type PluginOptions = {
   enableSorting: boolean
   locale: 'en' | 'fr'
   pageLength: number
-  theme: 'light' | 'dark'
+  theme: 'light' | 'dark' | 'auto'
 }
 export type TableOptions = Partial<PluginOptions>
 export type TableColumn = {
