@@ -5,24 +5,21 @@ import TableButton from './TableButton.vue'
 import vTooltip from '../directives/tooltip'
 import type { PageInfoEvent } from '../types'
 
-interface PaginatorProps {
+const props = withDefaults(defineProps<{
   hideFirstLast?: boolean
   hideLength?: boolean
   length?: number
   pageIndex?: number
   pageSize?: number
   unlimited?: boolean
-}
-interface PaginatorEmits {
-  (name: 'page', event: PageInfoEvent): void
-}
-
-const props = withDefaults(defineProps<PaginatorProps>(), {
+}>(), {
   length: 0,
   pageIndex: 0,
   pageSize: 10
 })
-const emits = defineEmits<PaginatorEmits>()
+const emits = defineEmits<{
+  (name: 'page', event: PageInfoEvent): void
+}>()
 
 const { trans } = useTranslate()
 
