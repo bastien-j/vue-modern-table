@@ -1,5 +1,5 @@
-import { unref } from "vue"
-import type { MaybeRef } from "../types"
+import { unref } from 'vue'
+import type { MaybeRef } from '../types'
 
 export function useFilters() {
   function filterString(value: MaybeRef<string>, filter: MaybeRef<string>) {

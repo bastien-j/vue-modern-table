@@ -1,4 +1,4 @@
-import type { Directive } from "vue"
+import type { Directive } from 'vue'
 
 const TOOLTIP_GAP = 10
 
@@ -34,7 +34,7 @@ function updateTooltipPos(el: CustomHTMLElement) {
 
 const tooltipDirective: Directive = {
   mounted: (el: CustomHTMLElement, binding) => {
-    const vueScope = Object.keys(el.dataset).find(k => k.startsWith('v-'))
+    const vueScope = Object.keys(el.dataset).find((k) => k.startsWith('v-'))
     el.__UpdateTooltipHandler__ = () => updateTooltipPos(el)
     // Timeout to wait for icons fonts loading (FontAwesome, Google Icons, etc)
     setTimeout(() => {

@@ -1,10 +1,19 @@
 <script setup lang="ts">
-import { computed, inject, ref, watch } from 'vue'
+import { computed, inject, ref, watch, type PropType } from 'vue'
 import '@material-design-icons/font/filled.css'
-import { injectionKey, type PluginOptions, type TableColumn, type TableRow } from './types'
+import {
+  injectionKey,
+  type PageInfoEvent,
+  type PluginOptions,
+  type TableColumn,
+  type TableOptions,
+  type TableRow
+} from './types'
 import { useFilters } from './composables/filter'
 import { useTranslate } from './composables/translate'
 import vTooltip from './directives/tooltip'
+import TableButton from './components/TableButton.vue'
+import TablePaginator from './components/TablePaginator.vue'
 
 const props = defineProps({
   columns: {
@@ -16,7 +25,7 @@ const props = defineProps({
     default: () => []
   },
   options: {
-    type: Object,
+    type: Object as PropType<TableOptions>,
     default: () => ({})
   },
   checkedRowKeys: {
@@ -24,7 +33,10 @@ const props = defineProps({
     default: () => []
   }
 })
-const emits = defineEmits(['update:checkedRowKeys'])
+const emits = defineEmits<{
+  (e: 'update:checkedRowKeys', keys: TableRow['key'][]): void
+  (e: 'nav:page', page: number): void
+}>()
 
 const globalOptions = inject(injectionKey) as PluginOptions
 const mergedOptions = computed(() => ({
@@ -32,21 +44,21 @@ const mergedOptions = computed(() => ({
   ...props.options
 }))
 const { filterString } = useFilters()
-const { trans } = useTranslate(mergedOptions.value.locale)
+const { trans } = useTranslate()
 
 // Filtering
 const filterValue = ref('')
 const filteredRows = computed(() => {
   if (!mergedOptions.value.enableFiltering) return props.rows.slice()
-  return props.rows
-    .slice()
-    .filter((r) =>
-      props.columns.filter(c => !c.noSort).some(c => {
+  return props.rows.slice().filter((r) =>
+    props.columns
+      .filter((c) => !c.noSort)
+      .some((c) => {
         r.test = 'fd'
         const value = r[c.field]
         if (typeof value === 'string') return filterString(value, filterValue)
       })
-    )
+  )
 })
 
 // Sorting
@@ -63,18 +75,19 @@ const sortedRows = computed(() => {
   }
   return sorted
 })
-const isColumnSortable = (column: TableColumn) => mergedOptions.value.enableSorting && !column.noSort
+const isColumnSortable = (column: TableColumn) =>
+  mergedOptions.value.enableSorting && !column.noSort
 const sortField = (field: string) => {
   const fieldIndex = findSortedFieldIndex(field)
   if (fieldIndex < 0) {
     sortedFields.value.unshift({
       field,
-      sort: 'ASC'
+      sort: 'DESC'
     })
     return
   }
   const existing = sortedFields.value[fieldIndex]
-  if (existing.sort === 'ASC') existing.sort = 'DESC'
+  if (existing.sort === 'DESC') existing.sort = 'ASC'
   else sortedFields.value.splice(fieldIndex, 1)
 }
 const findSortedFieldIndex = (field: string) =>
@@ -83,33 +96,18 @@ const findSortedField = (field: string) => sortedFields.value.find((f) => f.fiel
 const isFieldSorted = (field: string) => findSortedFieldIndex(field) >= 0
 
 // Pagination
-const currentPage = ref(0)
+const currentPage = ref(mergedOptions.value.initialPage ?? 0)
 const pageLength = computed(() => mergedOptions.value.pageLength ?? 5)
 const pageStart = computed(() => currentPage.value * pageLength.value)
 const pageEnd = computed(() => pageStart.value + pageLength.value)
-const lastPage = computed(() => Math.floor(filteredRows.value.length / pageLength.value))
 const paginatedRows = computed(() => {
   if (!mergedOptions.value.enablePagination) return sortedRows.value
   return sortedRows.value.slice(pageStart.value, pageEnd.value)
 })
-watch(pageLength, () => {
-  if (mergedOptions.value.enablePagination && currentPage.value > lastPage.value) navLastPage()
-})
-const navFirstPage = () => {
-  if (!currentPage.value) return
-  currentPage.value = 0
-}
-const navPreviousPage = () => {
-  if (!currentPage.value) return
-  currentPage.value -= 1
-}
-const navNextPage = () => {
-  if (currentPage.value >= lastPage.value) return
-  currentPage.value += 1
-}
-const navLastPage = () => {
-  if (currentPage.value === lastPage.value) return
-  currentPage.value = lastPage.value
+const navToPage = (page: PageInfoEvent | number) => {
+  if (typeof page === 'number') currentPage.value = page
+  else currentPage.value = page.pageIndex
+  emits('nav:page', currentPage.value)
 }
 
 // Checkbox
@@ -129,7 +127,6 @@ watch(filteredRows, (newValue) => {
       if (keyIndex >= 0) checkedRowKeys.value.splice(keyIndex, 1)
     }
   }
-  if (mergedOptions.value.enablePagination && currentPage.value > lastPage.value) navLastPage()
 })
 watch(checkedRowKeys, (newValue) => {
   emits('update:checkedRowKeys', newValue)
@@ -164,13 +161,9 @@ const exportAsCSV = () => {
         <input type="text" v-model="filterValue" />
       </div>
       <div class="modern-table-actions">
-        <button
-          class="modern-table-button"
-          @click="exportAsCSV()"
-          v-tooltip="trans('download-csv')"
-        >
+        <TableButton @click="exportAsCSV()" v-tooltip="trans('download-csv')">
           <span class="material-icons"> file_download </span>
-        </button>
+        </TableButton>
       </div>
     </div>
     <div class="modern-table-wrapper">
@@ -200,7 +193,7 @@ const exportAsCSV = () => {
                 <template v-if="isColumnSortable(column)">
                   <span
                     class="material-icons"
-                    :class="{ up: findSortedField(column.field)?.sort === 'DESC' }"
+                    :class="{ up: findSortedField(column.field)?.sort === 'ASC' }"
                   >
                     arrow_downward
                   </span>
@@ -209,7 +202,7 @@ const exportAsCSV = () => {
             </th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="modern-table-body">
           <tr v-for="row in paginatedRows" :key="row.key" class="modern-table-row">
             <td v-if="mergedOptions.enableCheckbox" class="modern-table-cell shrink">
               <input type="checkbox" :value="row.key" v-model="checkedRowKeys" />
@@ -234,48 +227,14 @@ const exportAsCSV = () => {
           </tr>
         </tbody>
       </table>
-      <div v-if="mergedOptions.enablePagination" class="modern-table-pagination">
-        <div class="modern-table-pagination-actions modern-table-pagination-previous">
-          <button
-            class="modern-table-button"
-            @click="navFirstPage()"
-            :disabled="!currentPage"
-            v-tooltip="trans('first-page')"
-          >
-            <span class="material-icons">first_page</span>
-          </button>
-          <button
-            class="modern-table-button"
-            @click="navPreviousPage()"
-            :disabled="!currentPage"
-            v-tooltip="trans('previous-page')"
-          >
-            <span class="material-icons">navigate_before</span>
-          </button>
-        </div>
-        <div class="modern-table-pagination-current">
-          {{ Math.min(pageStart + 1, filteredRows.length) }} -
-          {{ Math.min(pageEnd, filteredRows.length) }} / {{ filteredRows.length }}
-        </div>
-        <div class="modern-table-pagination-actions modern-table-pagination-next">
-          <button
-            class="modern-table-button"
-            @click="navNextPage()"
-            :disabled="currentPage >= lastPage"
-            v-tooltip="trans('next-page')"
-          >
-            <span class="material-icons">navigate_next</span>
-          </button>
-          <button
-            class="modern-table-button"
-            @click="navLastPage()"
-            :disabled="currentPage === lastPage"
-            v-tooltip="trans('last-page')"
-          >
-            <span class="material-icons">last_page</span>
-          </button>
-        </div>
-      </div>
+      <KeepAlive>
+        <TablePaginator
+          v-if="mergedOptions.enablePagination"
+          :length="filteredRows.length"
+          :page-size="mergedOptions.pageLength"
+          @page="navToPage($event)"
+        />
+      </KeepAlive>
     </div>
   </div>
 </template>
@@ -287,7 +246,7 @@ const exportAsCSV = () => {
   --t-bg-clr: hsl(0, 0%, 100%);
   --t-brd-clr: hsl(240, 11%, 93%);
   --t-bs-clr: var(--t-brd-clr);
-  --t-cell-clr: hsla(0, 0%, 0%, .87);
+  --t-cell-clr: hsla(0, 0%, 0%, 0.87);
   --t-h-hv-bg-clr: hsl(200, 17%, 93%);
   --t-btn-bg-clr: var(--t-bg-clr);
   --t-btn-hv-bg-clr: hsl(0, 0%, 91%);
@@ -298,30 +257,8 @@ const exportAsCSV = () => {
   --t-pgn-clr: hsl(0, 0%, 50%);
   --t-tt-bg-clr: hsl(0, 0%, 26%);
   --t-tt-brd-clr: var(--t-bg-clr);
-  --t-tt-clr: hsla(0, 0%, 100%, .87);
+  --t-tt-clr: hsla(0, 0%, 100%, 0.87);
 
-  .modern-table-button {
-    background-color: var(--t-bg-clr);
-    border: 1px solid var(--t-btn-brd-clr);
-    border-radius: var(--t-brd-rd);
-    display: grid;
-    padding: 0.5rem;
-    color: var(--t-btn-clr);
-    transition: var(--transition-duration);
-    user-select: none;
-
-    &:disabled {
-      color: var(--t-btn-dsbld-clr);
-    }
-
-    &:not(:disabled):hover {
-      background-color: var(--t-btn-hv-bg-clr);
-      cursor: pointer;
-    }
-    &:not(:disabled):active {
-      background-color: var(--t-btn-act-bg-clr);
-    }
-  }
   .modern-table-before {
     display: flex;
     align-items: flex-end;
@@ -370,7 +307,7 @@ const exportAsCSV = () => {
         transition: var(--transition-duration);
         border-bottom: 1px solid var(--t-brd-clr);
       }
-      &:not(.paginated) .modern-table-row:last-child {
+      &:not(.paginated) .modern-table-body .modern-table-row:last-child {
         border-bottom: none;
       }
       .modern-table-header {
@@ -416,44 +353,24 @@ const exportAsCSV = () => {
           }
         }
       }
-      .modern-table-body {
-        display: table-row-group;
-      }
-    }
-    .modern-table-pagination {
-      transition: var(--transition-duration);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 2rem;
-      padding: 1rem;
-
-      .modern-table-pagination-actions {
-        display: flex;
-        gap: 1rem;
-      }
-      .modern-table-pagination-current {
-        transition: var(--transition-duration);
-        color: var(--t-pgn-clr);
-      }
     }
   }
 
   * {
-    .modern-table-tooltip {
+    :deep(.modern-table-tooltip) {
       position: fixed;
       white-space: nowrap;
-      padding: .5rem;
+      padding: 0.5rem;
       background-color: var(--t-tt-bg-clr);
       color: var(--t-tt-clr);
       border: 1px solid var(--t-tt-brd-clr);
-      border-radius: .4rem;
+      border-radius: 0.4rem;
       opacity: 0;
       pointer-events: none;
       user-select: none;
       transition: var(--transition-duration) opacity;
     }
-    &:not(:disabled):hover+.modern-table-tooltip {
+    :not(:disabled):hover + :deep(.modern-table-tooltip) {
       opacity: 1;
     }
   }
@@ -467,7 +384,7 @@ const exportAsCSV = () => {
       --t-bg-clr: hsl(0, 0%, 26%);
       --t-brd-clr: hsl(0, 0%, 40%);
       --t-bs-clr: transparent;
-      --t-cell-clr: hsla(0, 0%, 100%, .87);
+      --t-cell-clr: hsla(0, 0%, 100%, 0.87);
       --t-h-hv-bg-clr: hsl(0, 0%, 20%);
       --t-btn-hv-bg-clr: hsl(0, 0%, 22%);
       --t-btn-act-bg-clr: hsl(0, 0%, 20%);
@@ -476,7 +393,7 @@ const exportAsCSV = () => {
       --t-btn-brd-clr: hsl(0, 0%, 43%);
       --t-pgn-clr: hsl(0, 0%, 66%);
       --t-tt-bg-clr: hsl(0, 0%, 100%);
-      --t-tt-clr: hsla(0, 0%, 0%, .87);
+      --t-tt-clr: hsla(0, 0%, 0%, 0.87);
     }
   }
 }

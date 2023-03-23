@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import type { TableOptions } from './modernTablePlugin/types'
-import data from './assets/data.json'
+import { columns, rows } from './assets/data.json'
+
+const PAGE_LENGTH = 5
 
 const tableOptions = ref<TableOptions>({
   enableCheckbox: false,
   enableFiltering: false,
   enablePagination: true,
   enableSorting: true,
-  locale: 'fr',
+  pageLength: PAGE_LENGTH,
   theme: 'auto'
 })
 const checkedRowKeys = ref([])
@@ -26,36 +28,38 @@ const showRow = (id: string | number) => {
 
 <template>
   <main :class="[tableOptions.theme]">
-    <div class="setting">
-      <label for="checkbox">Enable checkbox</label>
-      <input type="checkbox" id="checkbox" v-model="tableOptions.enableCheckbox" />
-    </div>
-    <div class="setting">
-      <label for="filtering">Enable filtering</label>
-      <input type="checkbox" id="filtering" v-model="tableOptions.enableFiltering" />
-    </div>
-    <div class="setting">
-      <label for="pagination">Enable pagination</label>
-      <input type="checkbox" id="pagination" v-model="tableOptions.enablePagination" />
-    </div>
-    <div class="setting">
-      <label for="sorting">Enable sorting</label>
-      <input type="checkbox" id="sorting" v-model="tableOptions.enableSorting" />
-    </div>
-    <div class="">
-      <p>Theme</p>
+    <div class="settings">
       <div class="setting">
-        <label for="auto">auto</label>
-        <input type="radio" id="auto" v-model="tableOptions.theme" value="auto" />
-        <label for="light">light</label>
-        <input type="radio" id="light" v-model="tableOptions.theme" value="light" />
-        <label for="dark">dark</label>
-        <input type="radio" id="dark" v-model="tableOptions.theme" value="dark" />
+        <label for="checkbox">Enable checkbox</label>
+        <input type="checkbox" id="checkbox" v-model="tableOptions.enableCheckbox" />
+      </div>
+      <div class="setting">
+        <label for="filtering">Enable filtering</label>
+        <input type="checkbox" id="filtering" v-model="tableOptions.enableFiltering" />
+      </div>
+      <div class="setting">
+        <label for="pagination">Enable pagination</label>
+        <input type="checkbox" id="pagination" v-model="tableOptions.enablePagination" />
+      </div>
+      <div class="setting">
+        <label for="sorting">Enable sorting</label>
+        <input type="checkbox" id="sorting" v-model="tableOptions.enableSorting" />
+      </div>
+      <div>
+        <p>Theme</p>
+        <div class="setting">
+          <label for="auto">auto</label>
+          <input type="radio" id="auto" v-model="tableOptions.theme" value="auto" />
+          <label for="light">light</label>
+          <input type="radio" id="light" v-model="tableOptions.theme" value="light" />
+          <label for="dark">dark</label>
+          <input type="radio" id="dark" v-model="tableOptions.theme" value="dark" />
+        </div>
       </div>
     </div>
     <ModernTable
-      :columns="data.columns"
-      :rows="data.rows"
+      :columns="columns"
+      :rows="rows"
       :options="tableOptions"
       v-model:checked-row-keys="checkedRowKeys"
     >
@@ -82,11 +86,13 @@ main {
   padding: 1rem;
   transition: 0.25s background;
   overflow: auto;
+  display: flex;
+  gap: 1rem;
 
   &.auto,
   &.dark {
     background-color: #333;
-    color: hsla(0, 0%, 100%, .87);
+    color: hsla(0, 0%, 100%, 0.87);
   }
 }
 .setting {

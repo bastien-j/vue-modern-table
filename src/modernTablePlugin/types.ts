@@ -6,6 +6,7 @@ export type PluginOptions = {
   enableFiltering: boolean
   enablePagination: boolean
   enableSorting: boolean
+  initialPage: number
   locale: 'en' | 'fr'
   pageLength: number
   theme: 'light' | 'dark' | 'auto'
@@ -22,6 +23,12 @@ export type TableColumn = {
 export type TableRow = {
   key: string | number
   [key: string]: any
+}
+export interface PageInfoEvent {
+  length: number
+  pageIndex: number
+  pageSize: number
+  previousPageIndex: number
 }
 export type MaybeRef<T> = Ref<T> | T
 
