@@ -34,12 +34,10 @@ function updateTooltipPos(el: CustomHTMLElement) {
 
 const tooltipDirective: Directive = {
   mounted: (el: CustomHTMLElement, binding) => {
-    const vueScope = Object.keys(el.dataset).find((k) => k.startsWith('v-'))
     el.__UpdateTooltipHandler__ = () => updateTooltipPos(el)
     // Timeout to wait for icons fonts loading (FontAwesome, Google Icons, etc)
     setTimeout(() => {
       el.tooltipEl = createTooltipDiv(binding.value)
-      if (vueScope) el.tooltipEl.dataset[vueScope] = ''
       el.after(el.tooltipEl)
       el.__UpdateTooltipHandler__()
       el.addEventListener('pointerenter', el.__UpdateTooltipHandler__)

@@ -9,11 +9,13 @@ import {
   type TableOptions,
   type TableRow
 } from './types'
-import { useFilters } from './composables/filter'
+import { useFiltering } from './composables/filtering'
 import { useTranslate } from './composables/translate'
 import vTooltip from './directives/tooltip'
 import TableButton from './components/TableButton.vue'
 import TablePaginator from './components/TablePaginator.vue'
+import { useSorting } from './composables/sorting'
+import { useExports } from './composables/exports'
 
 const props = defineProps({
   columns: {
@@ -39,61 +41,27 @@ const emits = defineEmits<{
 }>()
 
 const globalOptions = inject(injectionKey) as PluginOptions
-const mergedOptions = computed(() => ({
-  ...globalOptions,
-  ...props.options
-}))
-const { filterString } = useFilters()
-const { trans } = useTranslate()
+const mergedOptions = computed(() => ({ ...globalOptions, ...props.options }))
+const { trans } = useTranslate(mergedOptions.value.locale)
 
 // Filtering
-const filterValue = ref('')
-const filteredRows = computed(() => {
-  if (!mergedOptions.value.enableFiltering) return props.rows.slice()
-  return props.rows.slice().filter((r) =>
-    props.columns
-      .filter((c) => !c.noSort)
-      .some((c) => {
-        r.test = 'fd'
-        const value = r[c.field]
-        if (typeof value === 'string') return filterString(value, filterValue)
-      })
-  )
-})
+const { filterValue, filteredRows } = useFiltering(
+  props.rows,
+  props.columns.filter((c) => !c.noSort).map((c) => c.field),
+  mergedOptions
+)
 
 // Sorting
-const sortedFields = ref<{ field: string; sort: 'ASC' | 'DESC' }[]>([])
-const sortedRows = computed(() => {
-  const sorted = filteredRows.value.slice()
-  if (mergedOptions.value.enableSorting) {
-    sortedFields.value.map(({ field, sort }) => {
-      sorted.sort((a, b) => {
-        if (sort === 'ASC') return a[field] > b[field] ? 1 : a[field] < b[field] ? -1 : 0
-        return a[field] > b[field] ? -1 : a[field] < b[field] ? 1 : 0
-      })
-    })
-  }
-  return sorted
-})
-const isColumnSortable = (column: TableColumn) =>
-  mergedOptions.value.enableSorting && !column.noSort
-const sortField = (field: string) => {
-  const fieldIndex = findSortedFieldIndex(field)
-  if (fieldIndex < 0) {
-    sortedFields.value.unshift({
-      field,
-      sort: 'DESC'
-    })
-    return
-  }
-  const existing = sortedFields.value[fieldIndex]
-  if (existing.sort === 'DESC') existing.sort = 'ASC'
-  else sortedFields.value.splice(fieldIndex, 1)
-}
-const findSortedFieldIndex = (field: string) =>
-  sortedFields.value.findIndex((f) => f.field === field)
-const findSortedField = (field: string) => sortedFields.value.find((f) => f.field === field)
-const isFieldSorted = (field: string) => findSortedFieldIndex(field) >= 0
+const { sortedRows, isColumnSortable, sortField, findSortedField, isFieldSorted } = useSorting(
+  filteredRows,
+  mergedOptions
+)
+
+// Actions
+const { exportCSV } = useExports(
+  sortedRows,
+  props.columns.filter((c) => !c.noExport).map((c) => c.field)
+)
 
 // Pagination
 const currentPage = ref(mergedOptions.value.initialPage ?? 0)
@@ -135,23 +103,6 @@ const toggleSelectAll = () => {
   if (!checkedRowKeys.value.length) checkedRowKeys.value = sortedRows.value.map((r) => r.key)
   else checkedRowKeys.value = []
 }
-
-// Actions
-const exportAsCSV = () => {
-  const columns = props.columns.filter((c) => !c.noExport)
-  const headers = columns.map((c) => c.field).join(';')
-  const rows = sortedRows.value
-    .map((r) => {
-      return columns.map((c) => r[c.field]).join(';')
-    })
-    .join('\n')
-  const csvContent = headers.concat('\n', rows)
-
-  const linkEl = document.createElement('a')
-  linkEl.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csvContent)
-  linkEl.download = 'export.csv'
-  linkEl.click()
-}
 </script>
 
 <template>
@@ -161,8 +112,8 @@ const exportAsCSV = () => {
         <input type="text" v-model="filterValue" />
       </div>
       <div class="modern-table-actions">
-        <TableButton @click="exportAsCSV()" v-tooltip="trans('download-csv')">
-          <span class="material-icons"> file_download </span>
+        <TableButton @click="exportCSV()" v-tooltip="trans('download-csv')">
+          <span class="material-icons">file_download</span>
         </TableButton>
       </div>
     </div>
