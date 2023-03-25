@@ -1,46 +1,175 @@
-# vue-modern-table
+# Vue Modern Table
 
-This template should help get you started developing with Vue 3 in Vite.
+Modern table implementation for Vue 3 with sorting, filtering, pagination and CSV export.
 
-## Recommended IDE Setup
+## Demo
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+You can find a demo on [CodeSandbox](https://codesandbox.io/p/sandbox/sleepy-maxwell-kduo36)
 
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
-
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
-
-1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
+## Installation
 
 ```sh
-npm install
+npm install vue-modern-table
 ```
 
-### Compile and Hot-Reload for Development
+## Usage
 
-```sh
-npm run dev
+### Install the plugin
+
+Don't forget to import plugin styles if you want to use the integrated themes
+
+```js
+import { createApp } from 'vue'
+import { createModernTablePlugin } from 'vue-modern-table'
+import 'vue-modern-table/style.css'
+import App from './App.vue'
+const modernTablePlugin = createModernTablePlugin()
+const app = createApp(App)
+app.use(modernTablePlugin)
+app.mount('#app')
 ```
 
-### Type-Check, Compile and Minify for Production
+### Use the ModernTable component
 
-```sh
-npm run build
+```vue
+<template>
+  <ModernTable
+    :columns="[
+      { label: 'ID', field: 'id' },
+      { label: 'Name', field: 'name' }
+    ]"
+    :rows="[
+            { key: <random-unique-key>, id: 0, name: 'John' },
+            { key: <random-unique-key>, id: 1, name: 'Barbara' }
+        ]"
+  />
+</template>
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+By default, sorting and pagination will be enabled.
 
-```sh
-npm run lint
+For advanced usage, check out the demo on [CodeSandbox](https://codesandbox.io/p/sandbox/sleepy-maxwell-kduo36)
+
+### Configuration
+
+You can configure the table either globally and/or locally, by passing an option object to the `createModernTablePlugin` method or as prop to the `ModernTable` component.
+
+```js
+...
+const modernTablePlugin = createModernTablePlugin({...options})
+...
 ```
+
+and/or
+
+```vue
+<template>
+  <ModernTable :columns="cols" :rows="[rows]" :options="{ ...options }" />
+</template>
+```
+
+Available options :
+
+| Key              | Default | Description                                        |
+| ---------------- | ------- | -------------------------------------------------- |
+| enableSorting    | true    | Enable fields sorting                              |
+| enableFiltering  | false   | Enable fields filtering                            |
+| enablePagination | true    | Enable rows pagination                             |
+| enableCheckbox   | false   | Enable rows selection                              |
+| initialPage      | 0       | Initial page to load when using pagination         |
+| locale           | en      | Locale to use (available : 'en', 'fr')             |
+| pageLength       | 5       | Number of rows per page when using pagination      |
+| theme            | auto    | Theme to use (available : 'auto', 'light', 'dark') |
+
+### Slots
+
+You can customize the render of row cells using slots. Slots are named after each column `field` value. For each slot, you have access to the field name, the value of the cell and the complete row data.
+
+```vue
+<template>
+  <ModernTable
+    :columns="[
+      { label: 'ID', field: 'id' },
+      { label: 'Name', field: 'name' }
+    ]"
+    :rows="[
+            { key: <random-unique-key>, id: 0, name: 'John' },
+            { key: <random-unique-key>, id: 1, name: 'Barbara' }
+        ]"
+  >
+    <template #id="{ field, value, row }"> #{{ value }} </template>
+    <template #name="{ field, value, row }">
+      <div class="custom-name">
+        {{ value }}
+      </div>
+    </template>
+  </ModernTable>
+</template>
+
+<style>
+.custom-name {
+  background-color: #0c8581;
+  padding: 5px 7px;
+  border-radius: 5px;
+  color: white;
+}
+</style>
+```
+
+### Checkboxs
+
+You can enable row selection using the `enableCheckbox` option (disabled by default), and access selected rows using the `v-model` directive.
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const cols = [...]
+const rows = [...]
+
+const checkedRowKeys = ref([])
+</script>
+
+<template>
+  <ModernTable
+    :columns="cols"
+    :rows="rows"
+    :options="{ enableCheckbox: true }"
+    v-model:checked-row-keys="checkedRowKeys"
+  />
+  {{ checkedRowKeys }}
+</template>
+```
+
+### Columns configuration
+
+For each column, you enable/disable sorting, filtering, export and choose to shrink the column width.
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const cols = [
+    { label: 'ID', field: 'id', noFilter: true, noExport: true, shrink: true },
+    { label: 'Name', field: 'name', noSort: true }
+]
+const rows = [...]
+</script>
+
+<template>
+  <ModernTable :columns="cols" :rows="rows" />
+</template>
+```
+
+Available column options :
+
+| Key      | Default | Description                    |
+| -------- | ------- | ------------------------------ |
+| noSort   | false   | Disable column sorting         |
+| noFilter | false   | Disable column filtering       |
+| noExport | false   | Exclude column from CSV export |
+| shrink   | false   | Shrink column width            |
+
+## License
+
+[MIT](http://opensource.org/licenses/MIT)
