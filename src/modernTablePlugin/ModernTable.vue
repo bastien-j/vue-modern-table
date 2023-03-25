@@ -42,7 +42,7 @@ const emits = defineEmits<{
 
 const globalOptions = inject(injectionKey) as PluginOptions
 const mergedOptions = computed(() => ({ ...globalOptions, ...props.options }))
-const { trans } = useTranslate(mergedOptions.value.locale)
+const { translatedFields } = useTranslate(mergedOptions)
 
 // Filtering
 const { filterValue, filteredRows } = useFiltering(
@@ -112,7 +112,7 @@ const toggleSelectAll = () => {
         <input type="text" v-model="filterValue" />
       </div>
       <div class="modern-table-actions">
-        <TableButton @click="exportCSV()" v-tooltip="trans('download-csv')">
+        <TableButton @click="exportCSV()" v-tooltip="translatedFields['download-csv']">
           <span class="material-icons">file_download</span>
         </TableButton>
       </div>
@@ -182,6 +182,7 @@ const toggleSelectAll = () => {
         <TablePaginator
           v-if="mergedOptions.enablePagination"
           :length="filteredRows.length"
+          :messages="translatedFields"
           :page-size="mergedOptions.pageLength"
           @page="navToPage($event)"
         />

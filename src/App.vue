@@ -11,7 +11,8 @@ const tableOptions = ref<TableOptions>({
   enablePagination: true,
   enableSorting: true,
   pageLength: PAGE_LENGTH,
-  theme: 'auto'
+  theme: 'auto',
+  locale: 'en'
 })
 const checkedRowKeys = ref([])
 
@@ -29,6 +30,7 @@ const showRow = (id: string | number) => {
 <template>
   <main :class="[tableOptions.theme]">
     <div class="settings">
+      <h1>Settings</h1>
       <div class="setting">
         <label for="checkbox">Enable checkbox</label>
         <input type="checkbox" id="checkbox" v-model="tableOptions.enableCheckbox" />
@@ -45,15 +47,30 @@ const showRow = (id: string | number) => {
         <label for="sorting">Enable sorting</label>
         <input type="checkbox" id="sorting" v-model="tableOptions.enableSorting" />
       </div>
-      <div>
-        <p>Theme</p>
+      <div class="theme">
+        <h2>Theme</h2>
         <div class="setting">
-          <label for="auto">auto</label>
           <input type="radio" id="auto" v-model="tableOptions.theme" value="auto" />
-          <label for="light">light</label>
+          <label for="auto">auto</label>
+        </div>
+        <div class="setting">
           <input type="radio" id="light" v-model="tableOptions.theme" value="light" />
-          <label for="dark">dark</label>
+          <label for="light">light</label>
+        </div>
+        <div class="setting">
           <input type="radio" id="dark" v-model="tableOptions.theme" value="dark" />
+          <label for="dark">dark</label>
+        </div>
+      </div>
+      <div class="locale">
+        <h2>Locale</h2>
+        <div class="setting">
+          <input type="radio" id="en" v-model="tableOptions.locale" value="en" />
+          <label for="en">English</label>
+        </div>
+        <div class="setting">
+          <input type="radio" id="fr" v-model="tableOptions.locale" value="fr" />
+          <label for="fr">Français</label>
         </div>
       </div>
     </div>

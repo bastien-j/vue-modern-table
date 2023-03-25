@@ -43,6 +43,9 @@ const tooltipDirective: Directive = {
       el.addEventListener('pointerenter', el.__UpdateTooltipHandler__)
     }, 100)
   },
+  updated: (el: CustomHTMLElement, binding) => {
+    if (el.tooltipEl) el.tooltipEl.innerText = binding.value
+  },
   unmounted: (el: CustomHTMLElement) => {
     if (el.tooltipEl) el.tooltipEl.remove()
     el.removeEventListener('pointerenter', el.__UpdateTooltipHandler__)
