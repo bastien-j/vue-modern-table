@@ -1,6 +1,7 @@
 {
   "extends": "@vue/tsconfig/tsconfig.web.json",
   "include": ["env.d.ts", "src/modernTablePlugin/**/*", "src/modernTablePlugin/**/*.vue"],
+  "exclude": ["src/modernTablePlugin/__tests__"],
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
