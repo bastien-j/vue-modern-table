@@ -1,0 +1,18 @@
+{
+  "columns": [
+    { "field": "id", "label": "ID" },
+    { "field": "name", "label": "Name" },
+    { "field": "date", "label": "Date" }
+  ],
+  "rows": [
+    { "key": "0", "id": 0, "name": "Robert De Niro", "date": "August 17, 1943" },
+    { "key": "1", "id": 1, "name": "Jack Nicholson", "date": "April 22, 1937" },
+    { "key": "2", "id": 2, "name": "Marlon Brando", "date": "April 3, 1924" },
+    { "key": "3", "id": 3, "name": "Denzel Washington", "date": "December 28, 1954" },
+    { "key": "4", "id": 4, "name": "Katharine Hepburn", "date": "May 12, 1907" },
+    { "key": "5", "id": 5, "name": "Humphrey Bogart", "date": "December 25, 1899" },
+    { "key": "6", "id": 6, "name": "Meryl Streep", "date": "June 22, 1949" },
+    { "key": "7", "id": 7, "name": "Daniel Day-Lewis", "date": "April 29, 1957" },
+    { "key": "8", "id": 8, "name": "Sidney Poitier", "date": "February 20, 1927" }
+  ]
+}

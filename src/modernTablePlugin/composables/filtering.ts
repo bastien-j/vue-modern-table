@@ -1,4 +1,4 @@
-import { isRef, ref, unref, watchEffect } from 'vue'
+import { ref, unref, watchEffect } from 'vue'
 import type { MaybeRef, PluginOptions, TableRow } from '../types'
 
 export function useFiltering(
@@ -20,17 +20,14 @@ export function useFiltering(
     const rows = unref(rowsRef)
     const fieldsToFilter = unref(fieldsToFilterRef)
     const options = unref(optionsRef)
-    filteredRows.value = options.enableFiltering
-      ? rows.filter((r) => {
-          return fieldsToFilter.some((f) => {
-            if (typeof r[f] === 'string') return filterString(r[f], filterValue)
-          })
-        })
-      : rows
+    filteredRows.value = rows.filter((r) => {
+      return !options.enableFiltering || fieldsToFilter.some((f) => {
+        if (typeof r[f] === 'string') return filterString(r[f], filterValue)
+      })
+    })
   }
 
-  if (isRef(rowsRef) || isRef(fieldsToFilterRef) || isRef(optionsRef)) watchEffect(doFilter)
-  else doFilter()
+  watchEffect(doFilter)
 
   return {
     filterValue,

@@ -1,5 +1,4 @@
-import { inject, isRef, ref, unref, watchEffect } from 'vue'
-import { injectionKey } from '..'
+import { isRef, ref, unref, watchEffect } from 'vue'
 import en from '../locales/en.json'
 import fr from '../locales/fr.json'
 import type { MaybeRef, PluginOptions } from '../types'
@@ -9,14 +8,12 @@ const messages = {
   fr
 }
 
-export function useTranslate(optionsRef?: MaybeRef<PluginOptions>) {
-  const globalOptions = (inject(injectionKey) as PluginOptions) ?? { locale: 'fr' }
+export function useTranslate(optionsRef: MaybeRef<PluginOptions>) {
   const translatedFields = ref<Partial<{ [key in keyof typeof en]: any }>>({})
 
   function doTranslate() {
     const options = unref(optionsRef)
-    const l = options?.locale ?? globalOptions.locale
-    translatedFields.value = messages[l]
+    translatedFields.value = messages[options.locale]
   }
 
   if (isRef(optionsRef)) watchEffect(doTranslate)

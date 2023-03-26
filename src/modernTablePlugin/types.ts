@@ -9,7 +9,7 @@ export type PluginOptions = {
   initialPage: number
   locale: 'en' | 'fr'
   pageLength: number
-  theme: 'light' | 'dark' | 'auto'
+  theme: 'auto' | 'dark' | 'light'
 }
 export type TableOptions = Partial<PluginOptions>
 export type TableColumn = {
