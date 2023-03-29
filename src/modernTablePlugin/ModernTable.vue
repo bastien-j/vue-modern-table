@@ -192,9 +192,7 @@ const toggleSelectAll = () => {
 </template>
 
 <style scoped lang="scss">
-.modern-table {
-  --transition-duration: 0.25s;
-  --t-brd-rd: 0.5rem;
+@mixin lightTheme() {
   --t-bg-clr: hsl(0, 0%, 100%);
   --t-brd-clr: hsl(240, 11%, 93%);
   --t-bs-clr: var(--t-brd-clr);
@@ -210,6 +208,26 @@ const toggleSelectAll = () => {
   --t-tt-bg-clr: hsl(0, 0%, 26%);
   --t-tt-brd-clr: var(--t-bg-clr);
   --t-tt-clr: hsla(0, 0%, 100%, 0.87);
+}
+@mixin darkTheme() {
+  --t-bg-clr: hsl(0, 0%, 26%);
+  --t-brd-clr: hsl(0, 0%, 40%);
+  --t-bs-clr: transparent;
+  --t-cell-clr: hsla(0, 0%, 100%, 0.87);
+  --t-h-hv-bg-clr: hsl(0, 0%, 20%);
+  --t-btn-hv-bg-clr: hsl(0, 0%, 22%);
+  --t-btn-act-bg-clr: hsl(0, 0%, 20%);
+  --t-btn-clr: hsl(0, 0%, 69%);
+  --t-btn-dsbld-clr: hsl(0, 0%, 49%);
+  --t-btn-brd-clr: hsl(0, 0%, 43%);
+  --t-pgn-clr: hsl(0, 0%, 66%);
+  --t-tt-bg-clr: hsl(0, 0%, 100%);
+  --t-tt-clr: hsla(0, 0%, 0%, 0.87);
+}
+.modern-table {
+  --transition-duration: 0.25s;
+  --t-brd-rd: 0.5rem;
+  @include lightTheme();
 
   .modern-table-before {
     display: flex;
@@ -327,25 +345,13 @@ const toggleSelectAll = () => {
     }
   }
 
-  &.dark {
-    color-scheme: light;
+  &.theme-dark {
+    @include darkTheme();
   }
+
   @media (prefers-color-scheme: dark) {
-    &.theme-dark,
     &.theme-auto {
-      --t-bg-clr: hsl(0, 0%, 26%);
-      --t-brd-clr: hsl(0, 0%, 40%);
-      --t-bs-clr: transparent;
-      --t-cell-clr: hsla(0, 0%, 100%, 0.87);
-      --t-h-hv-bg-clr: hsl(0, 0%, 20%);
-      --t-btn-hv-bg-clr: hsl(0, 0%, 22%);
-      --t-btn-act-bg-clr: hsl(0, 0%, 20%);
-      --t-btn-clr: hsl(0, 0%, 69%);
-      --t-btn-dsbld-clr: hsl(0, 0%, 49%);
-      --t-btn-brd-clr: hsl(0, 0%, 43%);
-      --t-pgn-clr: hsl(0, 0%, 66%);
-      --t-tt-bg-clr: hsl(0, 0%, 100%);
-      --t-tt-clr: hsla(0, 0%, 0%, 0.87);
+      @include darkTheme();
     }
   }
 }
