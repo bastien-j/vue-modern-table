@@ -1,4 +1,4 @@
-import { isRef, ref, unref, watchEffect } from 'vue'
+import { ref, unref, watchEffect } from 'vue'
 import type { MaybeRef, PluginOptions, TableColumn, TableRow } from '../types'
 
 export function useSorting(rowsRef: MaybeRef<TableRow[]>, optionsRef: MaybeRef<PluginOptions>) {
@@ -44,20 +44,19 @@ export function useSorting(rowsRef: MaybeRef<TableRow[]>, optionsRef: MaybeRef<P
 
   function sortField(field: string) {
     const fieldIndex = findSortedFieldIndex(field)
-    if (fieldIndex < 0)
+    if (fieldIndex < 0) {
       sortedFields.value.unshift({
         field,
         sort: 'DESC'
       })
-    else {
+    } else {
       const existing = sortedFields.value[fieldIndex]
       if (existing.sort === 'DESC') existing.sort = 'ASC'
       else sortedFields.value.splice(fieldIndex, 1)
     }
   }
 
-  if (isRef(rowsRef) || isRef(optionsRef)) watchEffect(doSort)
-  else doSort()
+  watchEffect(doSort)
 
   return {
     sortedRows,
