@@ -1,20 +1,17 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import TableButton from './TableButton.vue'
-import vTooltip from '../directives/tooltip'
 import type { PageInfoEvent } from '../types'
 
 const props = withDefaults(defineProps<{
   hideFirstLast?: boolean
   hideLength?: boolean
   length?: number
-  messages: {[key: string]: string}
   pageIndex?: number
   pageSize?: number
   unlimited?: boolean
 }>(), {
   length: 0,
-  messages: () => ({}),
   pageIndex: 0,
   pageSize: 10
 })
@@ -71,28 +68,25 @@ const navLastPage = () => {
         v-if="!hideFirstLast"
         :disabled="!navPreviousEnable"
         @click="navFirstPage()"
-        v-tooltip="messages['first-page']"
       >
         <span class="material-icons">first_page</span>
       </TableButton>
       <TableButton
         :disabled="!navPreviousEnable"
         @click="navPreviousPage()"
-        v-tooltip="messages['previous-page']"
       >
         <span class="material-icons">navigate_before</span>
       </TableButton>
     </div>
     <span class="table-paginator-current">{{ currentPageData }}</span>
     <div class="table-paginator-buttons">
-      <TableButton :disabled="!navNextEnable" @click="navNextPage()" v-tooltip="messages['next-page']">
+      <TableButton :disabled="!navNextEnable" @click="navNextPage()">
         <span class="material-icons">navigate_next</span>
       </TableButton>
       <TableButton
         v-if="!hideFirstLast"
         :disabled="!navNextEnable"
         @click="navLastPage()"
-        v-tooltip="messages['last-page']"
       >
         <span class="material-icons">last_page</span>
       </TableButton>

@@ -6,7 +6,6 @@ export const DefaultPluginConfig: PluginOptions = {
   enablePagination: true,
   enableSorting: true,
   initialPage: 0,
-  locale: 'en',
   pageLength: 5,
   theme: 'auto'
 }

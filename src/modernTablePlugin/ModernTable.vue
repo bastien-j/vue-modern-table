@@ -10,8 +10,6 @@ import {
   type TableRow
 } from './types'
 import { useFiltering } from './composables/filtering'
-import { useTranslate } from './composables/translate'
-import vTooltip from './directives/tooltip'
 import TableButton from './components/TableButton.vue'
 import TablePaginator from './components/TablePaginator.vue'
 import { useSorting } from './composables/sorting'
@@ -42,7 +40,6 @@ const emits = defineEmits<{
 
 const globalOptions = inject(injectionKey) as PluginOptions
 const mergedOptions = computed(() => ({ ...globalOptions, ...props.options }))
-const { translatedFields } = useTranslate(mergedOptions)
 
 // Filtering
 const { filterValue, filteredRows } = useFiltering(
@@ -112,7 +109,7 @@ const toggleSelectAll = () => {
         <input type="text" v-model="filterValue" />
       </div>
       <div class="modern-table-actions">
-        <TableButton @click="exportCSV()" v-tooltip="translatedFields['download-csv']">
+        <TableButton @click="exportCSV()">
           <span class="material-icons">file_download</span>
         </TableButton>
       </div>
@@ -182,7 +179,6 @@ const toggleSelectAll = () => {
         <TablePaginator
           v-if="mergedOptions.enablePagination"
           :length="filteredRows.length"
-          :messages="translatedFields"
           :page-size="mergedOptions.pageLength"
           @page="navToPage($event)"
         />

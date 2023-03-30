@@ -11,8 +11,7 @@ const tableOptions = ref<TableOptions>({
   enablePagination: true,
   enableSorting: true,
   pageLength: PAGE_LENGTH,
-  theme: 'auto',
-  locale: 'en'
+  theme: 'auto'
 })
 const checkedRowKeys = ref([])
 
@@ -60,17 +59,6 @@ const showRow = (id: string | number) => {
         <div class="setting">
           <input type="radio" id="dark" v-model="tableOptions.theme" value="dark" />
           <label for="dark">dark</label>
-        </div>
-      </div>
-      <div class="locale">
-        <h2>Locale</h2>
-        <div class="setting">
-          <input type="radio" id="en" v-model="tableOptions.locale" value="en" />
-          <label for="en">English</label>
-        </div>
-        <div class="setting">
-          <input type="radio" id="fr" v-model="tableOptions.locale" value="fr" />
-          <label for="fr">Français</label>
         </div>
       </div>
     </div>

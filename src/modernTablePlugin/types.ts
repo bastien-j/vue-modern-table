@@ -7,7 +7,6 @@ export type PluginOptions = {
   enablePagination: boolean
   enableSorting: boolean
   initialPage: number
-  locale: 'en' | 'fr'
   pageLength: number
   theme: 'auto' | 'dark' | 'light'
 }
