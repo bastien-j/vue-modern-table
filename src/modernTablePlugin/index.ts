@@ -4,6 +4,7 @@ import defu from 'defu'
 
 const defaultOptions: PluginOptions = {
   enableCheckbox: false,
+  enableExport: false,
   enableFiltering: false,
   enablePagination: true,
   enableSorting: true,

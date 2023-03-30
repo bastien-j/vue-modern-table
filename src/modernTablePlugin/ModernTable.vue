@@ -41,6 +41,8 @@ const emits = defineEmits<{
 const globalOptions = inject(injectionKey) as PluginOptions
 const mergedOptions = computed(() => ({ ...globalOptions, ...props.options }))
 
+const showTableBefore = computed(() => mergedOptions.value.enableExport || mergedOptions.value.enableFiltering)
+
 // Filtering
 const { filterValue, filteredRows } = useFiltering(
   props.rows,
@@ -104,11 +106,11 @@ const toggleSelectAll = () => {
 
 <template>
   <div class="modern-table" :class="['theme-' + mergedOptions.theme]">
-    <div class="modern-table-before">
+    <div v-if="showTableBefore" class="modern-table-before">
       <div v-if="mergedOptions.enableFiltering" class="modern-table-filter">
         <input type="text" v-model="filterValue" />
       </div>
-      <div class="modern-table-actions">
+      <div v-if="mergedOptions.enableExport" class="modern-table-actions">
         <TableButton @click="exportCSV()">
           <span class="material-icons">file_download</span>
         </TableButton>

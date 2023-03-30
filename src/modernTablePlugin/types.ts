@@ -3,6 +3,7 @@ import type ModernTable from './ModernTable.vue'
 
 export type PluginOptions = {
   enableCheckbox: boolean
+  enableExport: boolean
   enableFiltering: boolean
   enablePagination: boolean
   enableSorting: boolean

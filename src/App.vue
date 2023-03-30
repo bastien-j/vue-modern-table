@@ -7,6 +7,7 @@ const PAGE_LENGTH = 5
 
 const tableOptions = ref<TableOptions>({
   enableCheckbox: false,
+  enableExport: false,
   enableFiltering: false,
   enablePagination: true,
   enableSorting: true,
@@ -33,6 +34,10 @@ const showRow = (id: string | number) => {
       <div class="setting">
         <label for="checkbox">Enable checkbox</label>
         <input type="checkbox" id="checkbox" v-model="tableOptions.enableCheckbox" />
+      </div>
+      <div class="setting">
+        <label for="export">Enable export</label>
+        <input type="checkbox" id="export" v-model="tableOptions.enableExport" />
       </div>
       <div class="setting">
         <label for="filtering">Enable filtering</label>
