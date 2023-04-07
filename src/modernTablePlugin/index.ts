@@ -8,6 +8,7 @@ const defaultOptions: PluginOptions = {
   enableFiltering: false,
   enablePagination: true,
   enableSorting: true,
+  fixWidth: true,
   initialPage: 0,
   pageLength: 5,
   theme: 'auto'

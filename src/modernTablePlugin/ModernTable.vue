@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject, ref, watch, type PropType } from 'vue'
+import { computed, inject, ref, watch, type PropType, onMounted, onUnmounted } from 'vue'
 import '@material-design-icons/font/filled.css'
 import {
   injectionKey,
@@ -38,6 +38,10 @@ const emits = defineEmits<{
   (e: 'nav:page', page: number): void
 }>()
 
+const tableRef = ref<HTMLTableElement>()
+const tableWidth = ref('auto')
+let resizeHandlerTimeout = -1
+
 const globalOptions = inject(injectionKey) as PluginOptions
 const mergedOptions = computed(() => ({ ...globalOptions, ...props.options }))
 
@@ -63,13 +67,12 @@ const { exportCSV } = useExports(
 )
 
 // Pagination
-const currentPage = ref(mergedOptions.value.initialPage ?? 0)
-const pageLength = computed(() => mergedOptions.value.pageLength ?? 5)
-const pageStart = computed(() => currentPage.value * pageLength.value)
-const pageEnd = computed(() => pageStart.value + pageLength.value)
+const currentPage = ref(mergedOptions.value.initialPage)
 const paginatedRows = computed(() => {
   if (!mergedOptions.value.enablePagination) return sortedRows.value
-  return sortedRows.value.slice(pageStart.value, pageEnd.value)
+  const pageStart = currentPage.value * mergedOptions.value.pageLength
+  const pageEnd = pageStart + mergedOptions.value.pageLength
+  return sortedRows.value.slice(pageStart, pageEnd)
 })
 const navToPage = (page: PageInfoEvent | number) => {
   if (typeof page === 'number') currentPage.value = page
@@ -102,6 +105,28 @@ const toggleSelectAll = () => {
   if (!checkedRowKeys.value.length) checkedRowKeys.value = sortedRows.value.map((r) => r.key)
   else checkedRowKeys.value = []
 }
+
+function resizeTable() {
+    if (mergedOptions.value.fixWidth && tableRef.value) {
+      tableWidth.value = tableRef.value.getBoundingClientRect().width + 'px'
+    }
+}
+
+function windowResizeHandler() {
+  tableWidth.value = 'auto'
+  clearTimeout(resizeHandlerTimeout)
+  resizeHandlerTimeout = setTimeout(() => {
+    resizeTable()
+  }, 100);
+}
+
+onMounted(() => {
+  window.addEventListener('resize', windowResizeHandler)
+  windowResizeHandler()
+})
+onUnmounted(() => {
+  window.removeEventListener('resize', windowResizeHandler)
+})
 </script>
 
 <template>
@@ -117,7 +142,12 @@ const toggleSelectAll = () => {
       </div>
     </div>
     <div class="modern-table-wrapper">
-      <table class="modern-table-table" :class="{ paginated: mergedOptions.enablePagination }">
+      <table
+        ref="tableRef"
+        class="modern-table-table"
+        :class="{ paginated: mergedOptions.enablePagination }"
+        :style="{ width: mergedOptions.fixWidth ? tableWidth : undefined }"
+      >
         <thead class="modern-table-header">
           <tr class="modern-table-row">
             <th

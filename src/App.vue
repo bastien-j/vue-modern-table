@@ -11,6 +11,7 @@ const tableOptions = ref<TableOptions>({
   enableFiltering: false,
   enablePagination: true,
   enableSorting: true,
+  fixWidth: true,
   pageLength: PAGE_LENGTH,
   theme: 'auto'
 })
@@ -50,6 +51,10 @@ const showRow = (id: string | number) => {
       <div class="setting">
         <label for="sorting">Enable sorting</label>
         <input type="checkbox" id="sorting" v-model="tableOptions.enableSorting" />
+      </div>
+      <div class="setting">
+        <label for="fixWidth">Fix width</label>
+        <input type="checkbox" id="fixWidth" v-model="tableOptions.fixWidth" />
       </div>
       <div class="theme">
         <h2>Theme</h2>

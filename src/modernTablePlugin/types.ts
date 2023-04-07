@@ -7,6 +7,7 @@ export type PluginOptions = {
   enableFiltering: boolean
   enablePagination: boolean
   enableSorting: boolean
+  fixWidth: boolean
   initialPage: number
   pageLength: number
   theme: 'auto' | 'dark' | 'light'
