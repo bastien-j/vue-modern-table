@@ -22,7 +22,7 @@ app.use(modernTablePlugin)
 app.mount('#app')
 ```
 
-Consult the [Option Reference](#) for full details on all config options.
+Consult the [Option Reference](../reference/plugin-options) for full details on all config options.
 
 ## Local Configuration
 
