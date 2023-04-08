@@ -50,7 +50,7 @@ const showTableBefore = computed(() => mergedOptions.value.enableExport || merge
 // Filtering
 const { filterValue, filteredRows } = useFiltering(
   props.rows,
-  props.columns.filter((c) => !c.noSort).map((c) => c.field),
+  props.columns.filter((c) => !c.noFilter).map((c) => c.field),
   mergedOptions
 )
 
