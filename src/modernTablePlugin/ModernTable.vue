@@ -211,6 +211,7 @@ onUnmounted(() => {
         <TablePaginator
           v-if="mergedOptions.enablePagination"
           :length="filteredRows.length"
+          :page-index="mergedOptions.initialPage"
           :page-size="mergedOptions.pageLength"
           @page="navToPage($event)"
         />
