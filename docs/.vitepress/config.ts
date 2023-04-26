@@ -26,7 +26,7 @@ function nav(): DefaultTheme.NavItem[] {
   return [
     { text: 'Guide', link: '/guide/getting-started', activeMatch: '/guide/' },
     { text: 'Reference', link: '/reference/table-column.md', activeMatch: '/reference/' },
-    { text: pkg.version, link: 'https://www.npmjs.com/package/vue-modern-table/v/' + pkg.version }
+    { text: pkg.version, link: 'https://www.npmjs.com/package/@bastien-j/vue-modern-table/v/' + pkg.version }
   ]
 }
 

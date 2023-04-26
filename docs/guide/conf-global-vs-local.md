@@ -12,7 +12,7 @@ To make all `ModernTable` components behave the same, pass an option object to t
 
 ```js
 import { createApp } from 'vue'
-import { createModernTablePlugin } from 'vue-modern-table'
+import { createModernTablePlugin } from '@bastien-j/vue-modern-table'
 import App from './App.vue'
 
 const modernTablePlugin = createModernTablePlugin({...options}) // [!code focus]

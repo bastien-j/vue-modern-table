@@ -10,14 +10,14 @@ You can try **VueModernTable** on [CodeSandbox](https://codesandbox.io/p/sandbox
 
 ## Installation
 
-Install `vue-modern-table` with your favorite package manager:
+Install `@bastien-j/vue-modern-table` with your favorite package manager:
 
 ::: code-group
 ```sh [npm]
-$ npm install vue-modern-table
+$ npm install @bastien-j/vue-modern-table
 ```
 ```sh [yarn]
-$ yarn add vue-modern-table
+$ yarn add @bastien-j/vue-modern-table
 ```
 :::
 
@@ -25,8 +25,8 @@ Initialize the plugin and pass it to your app instance:
 
 ```js{2,3,6,9}
 import { createApp } from 'vue'
-import { createModernTablePlugin } from 'vue-modern-table'
-import 'vue-modern-table/style.css' // integrated themes
+import { createModernTablePlugin } from '@bastien-j/vue-modern-table'
+import '@bastien-j/vue-modern-table/style.css' // integrated themes
 import App from './App.vue'
 
 const modernTablePlugin = createModernTablePlugin()
