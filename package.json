@@ -1,5 +1,5 @@
 {
-  "name": "vue-modern-table",
+  "name": "@bastien-j/vue-modern-table",
   "version": "0.0.6",
   "description": "A simple but modern Vue 3 data table with sorting, filtering and pagination",
   "keywords": [
