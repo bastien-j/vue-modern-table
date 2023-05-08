@@ -5,10 +5,10 @@ Checkboxs allow you to select rows in the table.
 :::tip
 By default, checkboxs option is **disabled**.
 :::
-:::details Version 0.6 and below
-Since version 0.7, the `key` field isn't mandatory anymore.
+:::details Version 0.0.6 and below
+Since version 0.0.7, the `key` field isn't mandatory anymore.
 
-For version 0.6 and below, to make use of checkboxs, each row must have a `key` field with a unique value. You can use [uuid](https://github.com/uuidjs/uuid) for that, or any other library that can generate random unique values.
+For version 0.0.6 and below, to make use of checkboxs, each row must have a `key` field with a unique value. You can use [uuid](https://github.com/uuidjs/uuid) for that, or any other library that can generate random unique values.
 :::
 
 ## Enabling / disabling checkboxs
