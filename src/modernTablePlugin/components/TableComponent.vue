@@ -78,7 +78,7 @@ watchEffect(() => {
           <input type="checkbox" :value="row" v-model="checkedRows" />
         </TableCell>
         <TableCell v-for="col in cols" :key="col.field">
-          <slot :name="col.field" :field="col.field" :value="row[col.field]" :row="row">
+          <slot :name="col.field" :field="col.field" :value="row[col.field]" :col="col" :row="row">
             {{ row[col.field] }}
           </slot>
         </TableCell>

@@ -42,8 +42,8 @@ const { exportCSV } = useExports(columns, sortedRows)
       :checked-rows="checkedRows"
       @update:checked-rows="$emit('update:checked-rows', $event)"
     >
-      <template v-for="col in columns" :key="col.field" #[col.field]="{ field, value, row }">
-        <slot :name="col.field" :field="field" :value="value" :row="row" />
+      <template v-for="col in columns" :key="col.field" #[col.field]="{ field, value, col: _col, row }">
+        <slot :name="_col.field" :field="field" :value="value" :row="row" />
       </template>
     </TableComponent>
   </div>

@@ -8,7 +8,7 @@ The plugin makes use of slots to allow full control over each row cell render.
 Slots are named after each column `field` value
 :::
 
-For each slot, you can access the `field` name, the `value` of the cell and the complete `row` data.
+For each slot, you can access the `field` name, the `value` of the cell, the `col` data and the complete `row` data.
 
 ```vue
 <template>
@@ -23,7 +23,7 @@ For each slot, you can access the `field` name, the `value` of the cell and the 
       { country: 'Germany', capital: 'Berlin' }
     ]"
   >
-    <template #capital="{ field, value, row }"> // [!code focus]
+    <template #capital="{ field, value, col, row }"> // [!code focus]
       <span class="custom-capital"> // [!code focus]
         {{ value }} // [!code focus]
       </span> // [!code focus]
@@ -53,7 +53,7 @@ For each slot, you can access the `field` name, the `value` of the cell and the 
     { country: 'Germany', capital: 'Berlin' }
   ]"
 >
-  <template #capital="{ field, value, row }">
+  <template #capital="{ field, value, col, row }">
     <span class="custom-capital">
       {{ value }}
     </span>
