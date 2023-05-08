@@ -19,13 +19,13 @@ To enable / disable rows sorting, simply set the `enableSorting` option to eithe
       { label: 'Population', field: 'population' }
     ]"
     :rows="[
-      { key: <random-unique-key>, country: 'Ukraine', capital: 'Kiev', population: '3M' },
-      { key: <random-unique-key>, country: 'France', capital: 'Paris', population: '2M' },
-      { key: <random-unique-key>, country: 'Germany', capital: 'Berlin', population: '4M' },
-      { key: <random-unique-key>, country: 'USA', capital: 'Washington', population: '700K' },
-      { key: <random-unique-key>, country: 'Brazil', capital: 'Brasília', population: '3M' },
-      { key: <random-unique-key>, country: 'England', capital: 'London', population: '9M' },
-      { key: <random-unique-key>, country: 'Russia', capital: 'Moscow', population: '12M' }
+      { country: 'Ukraine', capital: 'Kiev', population: '3M' },
+      { country: 'France', capital: 'Paris', population: '2M' },
+      { country: 'Germany', capital: 'Berlin', population: '4M' },
+      { country: 'USA', capital: 'Washington', population: '700K' },
+      { country: 'Brazil', capital: 'Brasília', population: '3M' },
+      { country: 'England', capital: 'London', population: '9M' },
+      { country: 'Russia', capital: 'Moscow', population: '12M' }
     ]"
     :options="{ enableSorting: true }" // [!code focus]
   />
@@ -40,13 +40,13 @@ To enable / disable rows sorting, simply set the `enableSorting` option to eithe
     { label: 'Population', field: 'population' }
   ]"
   :rows="[
-    { key: 0, country: 'Ukraine', capital: 'Kiev', population: '3M' },
-    { key: 1, country: 'France', capital: 'Paris', population: '2M' },
-    { key: 2, country: 'Germany', capital: 'Berlin', population: '4M' },
-    { key: 3, country: 'USA', capital: 'Washington', population: '700K' },
-    { key: 4, country: 'Brazil', capital: 'Brasília', population: '3M' },
-    { key: 5, country: 'England', capital: 'London', population: '9M' },
-    { key: 6, country: 'Russia', capital: 'Moscow', population: '12M' }
+    { country: 'Ukraine', capital: 'Kiev', population: '3M' },
+    { country: 'France', capital: 'Paris', population: '2M' },
+    { country: 'Germany', capital: 'Berlin', population: '4M' },
+    { country: 'USA', capital: 'Washington', population: '700K' },
+    { country: 'Brazil', capital: 'Brasília', population: '3M' },
+    { country: 'England', capital: 'London', population: '9M' },
+    { country: 'Russia', capital: 'Moscow', population: '12M' }
   ]"
   :options="{ enableSorting: true }"
 />
@@ -68,10 +68,10 @@ Use the `noSort` option to disable sorting on specific columns:
       { label: 'Capital', field: 'capital' }
     ]"
     :rows="[
-      { key: <random-unique-key>, country: 'Ukraine', capital: 'Kiev' },
-      { key: <random-unique-key>, country: 'France', capital: 'Paris' },
-      { key: <random-unique-key>, country: 'Germany', capital: 'Berlin' },
-      { key: <random-unique-key>, country: 'USA', capital: 'Washington' }
+      { country: 'Ukraine', capital: 'Kiev' },
+      { country: 'France', capital: 'Paris' },
+      { country: 'Germany', capital: 'Berlin' },
+      { country: 'USA', capital: 'Washington' }
     ]"
   />
 </template>
@@ -84,10 +84,10 @@ Use the `noSort` option to disable sorting on specific columns:
     { label: 'Capital', field: 'capital' }
   ]"
   :rows="[
-    { key: 0, country: 'Ukraine', capital: 'Kiev' },
-    { key: 1, country: 'France', capital: 'Paris' },
-    { key: 2, country: 'Germany', capital: 'Berlin' },
-    { key: 3, country: 'USA', capital: 'Washington' }
+    { country: 'Ukraine', capital: 'Kiev' },
+    { country: 'France', capital: 'Paris' },
+    { country: 'Germany', capital: 'Berlin' },
+    { country: 'USA', capital: 'Washington' }
   ]"
 />
 :::

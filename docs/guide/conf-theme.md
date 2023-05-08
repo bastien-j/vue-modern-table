@@ -19,9 +19,9 @@ To set the theme to use, simply set the `theme` option to either `dark`, `light`
       { label: 'Capital', field: 'capital' }
     ]"
     :rows="[
-      { key: <random-unique-key>, country: 'Ukraine', capital: 'Kiev' },
-      { key: <random-unique-key>, country: 'France', capital: 'Paris' },
-      { key: <random-unique-key>, country: 'Germany', capital: 'Berlin' }
+      { country: 'Ukraine', capital: 'Kiev' },
+      { country: 'France', capital: 'Paris' },
+      { country: 'Germany', capital: 'Berlin' }
     ]"
     :options="{ theme: 'dark' }" // [!code focus]
   />
@@ -35,9 +35,9 @@ To set the theme to use, simply set the `theme` option to either `dark`, `light`
     { label: 'Capital', field: 'capital' }
   ]"
   :rows="[
-    { key: 0, country: 'Ukraine', capital: 'Kiev' },
-    { key: 1, country: 'France', capital: 'Paris' },
-    { key: 2, country: 'Germany', capital: 'Berlin' }
+    { country: 'Ukraine', capital: 'Kiev' },
+    { country: 'France', capital: 'Paris' },
+    { country: 'Germany', capital: 'Berlin' }
   ]"
   :options="{ theme: 'dark' }"
 />
@@ -52,9 +52,9 @@ To set the theme to use, simply set the `theme` option to either `dark`, `light`
       { label: 'Capital', field: 'capital' }
     ]"
     :rows="[
-      { key: <random-unique-key>, country: 'Ukraine', capital: 'Kiev' },
-      { key: <random-unique-key>, country: 'France', capital: 'Paris' },
-      { key: <random-unique-key>, country: 'Germany', capital: 'Berlin' }
+      { country: 'Ukraine', capital: 'Kiev' },
+      { country: 'France', capital: 'Paris' },
+      { country: 'Germany', capital: 'Berlin' }
     ]"
     :options="{ theme: 'light' }" // [!code focus]
   />
@@ -68,9 +68,9 @@ To set the theme to use, simply set the `theme` option to either `dark`, `light`
     { label: 'Capital', field: 'capital' }
   ]"
   :rows="[
-    { key: 0, country: 'Ukraine', capital: 'Kiev' },
-    { key: 1, country: 'France', capital: 'Paris' },
-    { key: 2, country: 'Germany', capital: 'Berlin' }
+    { country: 'Ukraine', capital: 'Kiev' },
+    { country: 'France', capital: 'Paris' },
+    { country: 'Germany', capital: 'Berlin' }
   ]"
   :options="{ theme: 'light' }"
 />

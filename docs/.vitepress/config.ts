@@ -25,7 +25,7 @@ export default defineConfig({
 function nav(): DefaultTheme.NavItem[] {
   return [
     { text: 'Guide', link: '/guide/getting-started', activeMatch: '/guide/' },
-    { text: 'Reference', link: '/reference/table-column.md', activeMatch: '/reference/' },
+    { text: 'Reference', link: '/reference/plugin-options', activeMatch: '/reference/' },
     { text: pkg.version, link: 'https://www.npmjs.com/package/@bastien-j/vue-modern-table/v/' + pkg.version }
   ]
 }
@@ -65,16 +65,12 @@ function sidebarReference(): DefaultTheme.SidebarItem[] {
       text: 'Reference',
       items: [
         {
-          text: 'Table Column',
-          link: '/reference/table-column'
-        },
-        {
-          text: 'Table Row',
-          link: '/reference/table-row'
-        },
-        {
           text: 'Plugin Options',
           link: '/reference/plugin-options'
+        },
+        {
+          text: 'Table Column',
+          link: '/reference/table-column'
         }
       ]
     }

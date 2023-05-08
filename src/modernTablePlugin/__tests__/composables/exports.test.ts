@@ -1,13 +1,10 @@
 import { expect, test } from 'vitest'
-import { columns, rows } from '../assets/data.json'
-import type { TableColumn } from '../../../modernTablePlugin/types'
+
 import { useExports } from '../../composables/exports'
+import { columns, rows } from '../assets/data.json'
 
 test('exports', async () => {
-  const { tableToString } = useExports(
-    rows,
-    columns.filter((c: TableColumn) => !c.noExport).map((c) => c.field)
-  )
+  const { asString } = useExports(columns, rows)
 
-  expect(tableToString()).toHaveLength(312)
+  expect(asString.value).toHaveLength(312)
 })

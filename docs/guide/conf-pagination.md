@@ -18,13 +18,13 @@ To enable / disable rows pagination, simply set the `enablePagination` option to
       { label: 'Capital', field: 'capital' }
     ]"
     :rows="[
-      { key: <random-unique-key>, country: 'Ukraine', capital: 'Kiev' },
-      { key: <random-unique-key>, country: 'France', capital: 'Paris' },
-      { key: <random-unique-key>, country: 'Germany', capital: 'Berlin' },
-      { key: <random-unique-key>, country: 'USA', capital: 'Washington' },
-      { key: <random-unique-key>, country: 'Brazil', capital: 'Brasília' },
-      { key: <random-unique-key>, country: 'England', capital: 'London' },
-      { key: <random-unique-key>, country: 'Russia', capital: 'Moscow' }
+      { country: 'Ukraine', capital: 'Kiev' },
+      { country: 'France', capital: 'Paris' },
+      { country: 'Germany', capital: 'Berlin' },
+      { country: 'USA', capital: 'Washington' },
+      { country: 'Brazil', capital: 'Brasília' },
+      { country: 'England', capital: 'London' },
+      { country: 'Russia', capital: 'Moscow' }
     ]"
     :options="{ enablePagination: true }" // [!code focus]
   />
@@ -38,13 +38,13 @@ To enable / disable rows pagination, simply set the `enablePagination` option to
     { label: 'Capital', field: 'capital' }
   ]"
   :rows="[
-    { key: 0, country: 'Ukraine', capital: 'Kiev' },
-    { key: 1, country: 'France', capital: 'Paris' },
-    { key: 2, country: 'Germany', capital: 'Berlin' },
-    { key: 3, country: 'USA', capital: 'Washington' },
-    { key: 4, country: 'Brazil', capital: 'Brasília' },
-    { key: 5, country: 'England', capital: 'London' },
-    { key: 6, country: 'Russia', capital: 'Moscow' }
+    { country: 'Ukraine', capital: 'Kiev' },
+    { country: 'France', capital: 'Paris' },
+    { country: 'Germany', capital: 'Berlin' },
+    { country: 'USA', capital: 'Washington' },
+    { country: 'Brazil', capital: 'Brasília' },
+    { country: 'England', capital: 'London' },
+    { country: 'Russia', capital: 'Moscow' }
   ]"
   :options="{ enablePagination: true }"
 />
@@ -57,13 +57,13 @@ Without pagination:
     { label: 'Capital', field: 'capital' }
   ]"
   :rows="[
-    { key: 0, country: 'Ukraine', capital: 'Kiev' },
-    { key: 1, country: 'France', capital: 'Paris' },
-    { key: 2, country: 'Germany', capital: 'Berlin' },
-    { key: 3, country: 'USA', capital: 'Washington' },
-    { key: 4, country: 'Brazil', capital: 'Brasília' },
-    { key: 5, country: 'England', capital: 'London' },
-    { key: 6, country: 'Russia', capital: 'Moscow' }
+    { country: 'Ukraine', capital: 'Kiev' },
+    { country: 'France', capital: 'Paris' },
+    { country: 'Germany', capital: 'Berlin' },
+    { country: 'USA', capital: 'Washington' },
+    { country: 'Brazil', capital: 'Brasília' },
+    { country: 'England', capital: 'London' },
+    { country: 'Russia', capital: 'Moscow' }
   ]"
   :options="{ enablePagination: false }"
 />
@@ -81,13 +81,13 @@ You can override the default page length (5) using the `pageLength` option:
       { label: 'Capital', field: 'capital' }
     ]"
     :rows="[
-      { key: <random-unique-key>, country: 'Ukraine', capital: 'Kiev' },
-      { key: <random-unique-key>, country: 'France', capital: 'Paris' },
-      { key: <random-unique-key>, country: 'Germany', capital: 'Berlin' },
-      { key: <random-unique-key>, country: 'USA', capital: 'Washington' },
-      { key: <random-unique-key>, country: 'Brazil', capital: 'Brasília' },
-      { key: <random-unique-key>, country: 'England', capital: 'London' },
-      { key: <random-unique-key>, country: 'Russia', capital: 'Moscow' }
+      { country: 'Ukraine', capital: 'Kiev' },
+      { country: 'France', capital: 'Paris' },
+      { country: 'Germany', capital: 'Berlin' },
+      { country: 'USA', capital: 'Washington' },
+      { country: 'Brazil', capital: 'Brasília' },
+      { country: 'England', capital: 'London' },
+      { country: 'Russia', capital: 'Moscow' }
     ]"
     :options="{
       enablePagination: true,
@@ -104,13 +104,13 @@ You can override the default page length (5) using the `pageLength` option:
     { label: 'Capital', field: 'capital' }
   ]"
   :rows="[
-    { key: 0, country: 'Ukraine', capital: 'Kiev' },
-    { key: 1, country: 'France', capital: 'Paris' },
-    { key: 2, country: 'Germany', capital: 'Berlin' },
-    { key: 3, country: 'USA', capital: 'Washington' },
-    { key: 4, country: 'Brazil', capital: 'Brasília' },
-    { key: 5, country: 'England', capital: 'London' },
-    { key: 6, country: 'Russia', capital: 'Moscow' }
+    { country: 'Ukraine', capital: 'Kiev' },
+    { country: 'France', capital: 'Paris' },
+    { country: 'Germany', capital: 'Berlin' },
+    { country: 'USA', capital: 'Washington' },
+    { country: 'Brazil', capital: 'Brasília' },
+    { country: 'England', capital: 'London' },
+    { country: 'Russia', capital: 'Moscow' }
   ]"
   :options="{
     enablePagination: true,
@@ -131,13 +131,13 @@ You can set the initial page to load using the `initialPage` option:
       { label: 'Capital', field: 'capital' }
     ]"
     :rows="[
-      { key: <random-unique-key>, country: 'Ukraine', capital: 'Kiev' },
-      { key: <random-unique-key>, country: 'France', capital: 'Paris' },
-      { key: <random-unique-key>, country: 'Germany', capital: 'Berlin' },
-      { key: <random-unique-key>, country: 'USA', capital: 'Washington' },
-      { key: <random-unique-key>, country: 'Brazil', capital: 'Brasília' },
-      { key: <random-unique-key>, country: 'England', capital: 'London' },
-      { key: <random-unique-key>, country: 'Russia', capital: 'Moscow' }
+      { country: 'Ukraine', capital: 'Kiev' },
+      { country: 'France', capital: 'Paris' },
+      { country: 'Germany', capital: 'Berlin' },
+      { country: 'USA', capital: 'Washington' },
+      { country: 'Brazil', capital: 'Brasília' },
+      { country: 'England', capital: 'London' },
+      { country: 'Russia', capital: 'Moscow' }
     ]"
     :options="{
       enablePagination: true,
@@ -154,13 +154,13 @@ You can set the initial page to load using the `initialPage` option:
     { label: 'Capital', field: 'capital' }
   ]"
   :rows="[
-    { key: 0, country: 'Ukraine', capital: 'Kiev' },
-    { key: 1, country: 'France', capital: 'Paris' },
-    { key: 2, country: 'Germany', capital: 'Berlin' },
-    { key: 3, country: 'USA', capital: 'Washington' },
-    { key: 4, country: 'Brazil', capital: 'Brasília' },
-    { key: 5, country: 'England', capital: 'London' },
-    { key: 6, country: 'Russia', capital: 'Moscow' }
+    { country: 'Ukraine', capital: 'Kiev' },
+    { country: 'France', capital: 'Paris' },
+    { country: 'Germany', capital: 'Berlin' },
+    { country: 'USA', capital: 'Washington' },
+    { country: 'Brazil', capital: 'Brasília' },
+    { country: 'England', capital: 'London' },
+    { country: 'Russia', capital: 'Moscow' }
   ]"
   :options="{
     enablePagination: true,

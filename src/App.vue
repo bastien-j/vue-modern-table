@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import type { TableOptions } from './modernTablePlugin/types'
+
 import { columns, rows } from './assets/data.json'
+import { columns as columns2, rows as rows2 } from './assets/data2.json'
+import type { TableOptions } from './modernTablePlugin/types'
 
 const PAGE_LENGTH = 5
 
@@ -11,27 +13,25 @@ const tableOptions = ref<TableOptions>({
   enableFiltering: false,
   enablePagination: true,
   enableSorting: true,
-  fixWidth: true,
   pageLength: PAGE_LENGTH,
   theme: 'auto'
 })
-const checkedRowKeys = ref([])
+const checkedRows = ref([rows[1]])
 
 const deleteRow = (id: string | number) => {
-  alert(`deleting row with id ${id}`)
+  console.log(`deleting row with id ${id}`)
 }
 const editRow = (id: string | number) => {
-  alert(`editing row with id ${id}`)
+  console.log(`editing row with id ${id}`)
 }
 const showRow = (id: string | number) => {
-  alert(`showing row with id ${id}`)
+  console.log(`showing row with id ${id}`)
 }
 </script>
 
 <template>
-  <main :class="[tableOptions.theme]">
+  <main>
     <div class="settings">
-      <h1>Settings</h1>
       <div class="setting">
         <label for="checkbox">Enable checkbox</label>
         <input type="checkbox" id="checkbox" v-model="tableOptions.enableCheckbox" />
@@ -52,12 +52,8 @@ const showRow = (id: string | number) => {
         <label for="sorting">Enable sorting</label>
         <input type="checkbox" id="sorting" v-model="tableOptions.enableSorting" />
       </div>
-      <div class="setting">
-        <label for="fixWidth">Fix width</label>
-        <input type="checkbox" id="fixWidth" v-model="tableOptions.fixWidth" />
-      </div>
       <div class="theme">
-        <h2>Theme</h2>
+        <span>Theme</span>
         <div class="setting">
           <input type="radio" id="auto" v-model="tableOptions.theme" value="auto" />
           <label for="auto">auto</label>
@@ -72,20 +68,34 @@ const showRow = (id: string | number) => {
         </div>
       </div>
     </div>
-    <ModernTable
-      :columns="columns"
-      :rows="rows"
-      :options="tableOptions"
-      v-model:checked-row-keys="checkedRowKeys"
-    >
-      <template #actions="{ row }">
-        <div class="buttons">
-          <button @click="deleteRow(row.id)"><span class="material-icons">delete</span></button>
-          <button @click="editRow(row.id)"><span class="material-icons">edit</span></button>
-          <button @click="showRow(row.id)"><span class="material-icons">visibility</span></button>
-        </div>
-      </template>
-    </ModernTable>
+    <div class="table-wrapper">
+      <ModernTable
+        :columns="columns"
+        :rows="rows"
+        :options="tableOptions"
+        v-model:checked-rows="checkedRows"
+      >
+        <template #actions="{ row }">
+          <div class="buttons">
+            <button @click="deleteRow(row.id)"><span class="material-icons">delete</span></button>
+            <button @click="editRow(row.id)"><span class="material-icons">edit</span></button>
+            <button @click="showRow(row.id)"><span class="material-icons">visibility</span></button>
+          </div>
+        </template>
+      </ModernTable>
+    </div>
+    {{ checkedRows }}
+    <div class="table-wrapper">
+      <ModernTable :columns="columns2" :rows="rows2" :options="tableOptions">
+        <template #actions="{ row }">
+          <div class="buttons">
+            <button @click="deleteRow(row.id)"><span class="material-icons">delete</span></button>
+            <button @click="editRow(row.id)"><span class="material-icons">edit</span></button>
+            <button @click="showRow(row.id)"><span class="material-icons">visibility</span></button>
+          </div>
+        </template>
+      </ModernTable>
+    </div>
   </main>
 </template>
 
@@ -97,32 +107,29 @@ const showRow = (id: string | number) => {
   font-family: sans-serif;
 }
 main {
-  height: 100vh;
-  padding: 1rem;
-  transition: 0.25s background;
-  overflow: auto;
+  min-height: 100vh;
+  padding: 16px;
+  display: grid;
+  gap: 16px;
+  align-content: flex-start;
+  background-color: #333;
+}
+.settings {
+  box-shadow: hsl(0, 0%, 85%) 0 0 5px;
+  border-radius: 8px;
+  padding: 16px;
   display: flex;
-  gap: 1rem;
-
-  &.auto,
-  &.dark {
-    background-color: #333;
-    color: hsla(0, 0%, 100%, 0.87);
-  }
+  gap: 64px;
+  background-color: hsl(0, 0%, 100%);
 }
 .setting {
-  display: flex;
+  display: inline-flex;
   gap: 0.5rem;
   align-items: center;
-  margin-bottom: 1rem;
 }
-.test {
-  padding: 0.5rem;
-  border-radius: 1rem;
-  background-color: lightgreen;
-  display: grid;
-  place-content: center;
-  margin: auto;
+.theme {
+  display: inline-flex;
+  gap: 16px;
 }
 .buttons {
   display: flex;
@@ -131,7 +138,10 @@ main {
   button {
     display: grid;
     place-content: center;
-    padding: 0.25rem;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
   }
 }
 </style>

@@ -3,10 +3,12 @@
 Checkboxs allow you to select rows in the table.
 
 :::tip
-By default, export option is **disabled**.
+By default, checkboxs option is **disabled**.
 :::
-:::warning
-To make use of checkboxs, each row must have a `key` field with a unique value. You can use [uuid](https://github.com/uuidjs/uuid) for that, or any other library that can generate random unique values.
+:::details Version 0.6 and below
+Since version 0.7, the `key` field isn't mandatory anymore.
+
+For version 0.6 and below, to make use of checkboxs, each row must have a `key` field with a unique value. You can use [uuid](https://github.com/uuidjs/uuid) for that, or any other library that can generate random unique values.
 :::
 
 ## Enabling / disabling checkboxs
@@ -21,9 +23,9 @@ To enable / disable checkboxs, simply set the `enableCheckbox` option to either 
       { label: 'Capital', field: 'capital' }
     ]"
     :rows="[
-      { key: <random-unique-key>, country: 'Ukraine', capital: 'Kiev' },
-      { key: <random-unique-key>, country: 'France', capital: 'Paris' },
-      { key: <random-unique-key>, country: 'Germany', capital: 'Berlin' }
+      { country: 'Ukraine', capital: 'Kiev' },
+      { country: 'France', capital: 'Paris' },
+      { country: 'Germany', capital: 'Berlin' }
     ]"
     :options="{ enableCheckbox: true }" // [!code focus]
   />
@@ -37,9 +39,9 @@ To enable / disable checkboxs, simply set the `enableCheckbox` option to either 
     { label: 'Capital', field: 'capital' }
   ]"
   :rows="[
-    { key: 0, country: 'Ukraine', capital: 'Kiev' },
-    { key: 1, country: 'France', capital: 'Paris' },
-    { key: 2, country: 'Germany', capital: 'Berlin' }
+    { country: 'Ukraine', capital: 'Kiev' },
+    { country: 'France', capital: 'Paris' },
+    { country: 'Germany', capital: 'Berlin' }
   ]"
   :options="{ enableCheckbox: true }"
 />
@@ -63,9 +65,9 @@ const checkedRowKeys = ref([]) // [!code focus]
       { label: 'Capital', field: 'capital' }
     ]"
     :rows="[
-      { key: <random-unique-key>, country: 'Ukraine', capital: 'Kiev' },
-      { key: <random-unique-key>, country: 'France', capital: 'Paris' },
-      { key: <random-unique-key>, country: 'Germany', capital: 'Berlin' }
+      { country: 'Ukraine', capital: 'Kiev' },
+      { country: 'France', capital: 'Paris' },
+      { country: 'Germany', capital: 'Berlin' }
     ]"
     :options="{ enableCheckbox: true }"
     v-model:checked-row-keys="checkedRowKeys" // [!code focus]
@@ -76,7 +78,7 @@ const checkedRowKeys = ref([]) // [!code focus]
 <script setup lang="ts">
 import { ref } from 'vue'
 
-const checkedRowKeys = ref([])
+const checkedRows = ref([])
 </script>
 :::raw
 <ModernTable
@@ -85,17 +87,17 @@ const checkedRowKeys = ref([])
     { label: 'Capital', field: 'capital' }
   ]"
   :rows="[
-    { key: 0, country: 'Ukraine', capital: 'Kiev' },
-    { key: 1, country: 'France', capital: 'Paris' },
-    { key: 2, country: 'Germany', capital: 'Berlin' }
+    { country: 'Ukraine', capital: 'Kiev' },
+    { country: 'France', capital: 'Paris' },
+    { country: 'Germany', capital: 'Berlin' }
   ]"
   :options="{ enableCheckbox: true }"
-  v-model:checked-row-keys="checkedRowKeys"
+  v-model:checked-rows="checkedRows"
 />
 :::
 
 <div class="language-text"><pre><code>Selected row keys:
-{{ checkedRowKeys }}
+{{ checkedRows }}
 </code></pre></div>
 
 :::tip

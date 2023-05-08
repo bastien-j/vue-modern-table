@@ -1,20 +1,24 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import TableButton from './TableButton.vue'
-import type { PageInfoEvent } from '../types'
 
-const props = withDefaults(defineProps<{
-  hideFirstLast?: boolean
-  hideLength?: boolean
-  length?: number
-  pageIndex?: number
-  pageSize?: number
-  unlimited?: boolean
-}>(), {
-  length: 0,
-  pageIndex: 0,
-  pageSize: 10
-})
+import type { PageInfoEvent } from '../types'
+import TableButton from './TableButton.vue'
+
+const props = withDefaults(
+  defineProps<{
+    hideFirstLast?: boolean
+    hideLength?: boolean
+    length?: number
+    pageIndex?: number
+    pageSize?: number
+    unlimited?: boolean
+  }>(),
+  {
+    length: 0,
+    pageIndex: 0,
+    pageSize: 10
+  }
+)
 const emits = defineEmits<{
   (name: 'page', event: PageInfoEvent): void
 }>()
@@ -64,17 +68,10 @@ const navLastPage = () => {
 <template>
   <div class="table-paginator">
     <div class="table-paginator-buttons">
-      <TableButton
-        v-if="!hideFirstLast"
-        :disabled="!navPreviousEnable"
-        @click="navFirstPage()"
-      >
+      <TableButton v-if="!hideFirstLast" :disabled="!navPreviousEnable" @click="navFirstPage()">
         <span class="material-icons">first_page</span>
       </TableButton>
-      <TableButton
-        :disabled="!navPreviousEnable"
-        @click="navPreviousPage()"
-      >
+      <TableButton :disabled="!navPreviousEnable" @click="navPreviousPage()">
         <span class="material-icons">navigate_before</span>
       </TableButton>
     </div>
@@ -83,11 +80,7 @@ const navLastPage = () => {
       <TableButton :disabled="!navNextEnable" @click="navNextPage()">
         <span class="material-icons">navigate_next</span>
       </TableButton>
-      <TableButton
-        v-if="!hideFirstLast"
-        :disabled="!navNextEnable"
-        @click="navLastPage()"
-      >
+      <TableButton v-if="!hideFirstLast" :disabled="!navNextEnable" @click="navLastPage()">
         <span class="material-icons">last_page</span>
       </TableButton>
     </div>
@@ -101,7 +94,6 @@ const navLastPage = () => {
   align-items: center;
   justify-content: space-between;
   gap: 2rem;
-  padding: 1rem;
 
   .table-paginator-buttons {
     display: flex;

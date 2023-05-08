@@ -18,15 +18,15 @@ For each slot, you can access the `field` name, the `value` of the cell and the 
       { label: 'Capital', field: 'capital' }
     ]"
     :rows="[
-      { key: <random-unique-key>, country: 'Ukraine', capital: 'Kiev' },
-      { key: <random-unique-key>, country: 'France', capital: 'Paris' },
-      { key: <random-unique-key>, country: 'Germany', capital: 'Berlin' }
+      { country: 'Ukraine', capital: 'Kiev' },
+      { country: 'France', capital: 'Paris' },
+      { country: 'Germany', capital: 'Berlin' }
     ]"
   >
     <template #capital="{ field, value, row }"> // [!code focus]
-      <div class="custom-capital"> // [!code focus]
+      <span class="custom-capital"> // [!code focus]
         {{ value }} // [!code focus]
-      </div> // [!code focus]
+      </span> // [!code focus]
     </template> // [!code focus]
   </ModernTable>
 </template>
@@ -48,15 +48,15 @@ For each slot, you can access the `field` name, the `value` of the cell and the 
     { label: 'Capital', field: 'capital' }
   ]"
   :rows="[
-    { key: 0, country: 'Ukraine', capital: 'Kiev' },
-    { key: 1, country: 'France', capital: 'Paris' },
-    { key: 2, country: 'Germany', capital: 'Berlin' }
+    { country: 'Ukraine', capital: 'Kiev' },
+    { country: 'France', capital: 'Paris' },
+    { country: 'Germany', capital: 'Berlin' }
   ]"
 >
   <template #capital="{ field, value, row }">
-    <div class="custom-capital">
+    <span class="custom-capital">
       {{ value }}
-    </div>
+    </span>
   </template>
 </ModernTable>
 :::

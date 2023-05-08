@@ -10,7 +10,7 @@
 .table-button {
   background-color: var(--t-bg-clr);
   border: 1px solid var(--t-btn-brd-clr);
-  border-radius: var(--t-brd-rd);
+  border-radius: 8px;
   display: grid;
   padding: 0.5rem;
   color: var(--t-btn-clr);

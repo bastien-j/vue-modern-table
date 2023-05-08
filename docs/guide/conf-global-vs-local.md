@@ -36,11 +36,11 @@ You can also set options of your `ModernTable` components individually by using 
       { label: 'Capital', field: 'capital' }
     ]"
     :rows="[
-      { key: <random-unique-key>, country: 'Ukraine', capital: 'Kiev' },
-      { key: <random-unique-key>, country: 'France', capital: 'Paris' },
-      { key: <random-unique-key>, country: 'Germany', capital: 'Berlin' },
-      { key: <random-unique-key>, country: 'USA', capital: 'Washington' },
-      { key: <random-unique-key>, country: 'China', capital: 'Beijing' }
+      { country: 'Ukraine', capital: 'Kiev' },
+      { country: 'France', capital: 'Paris' },
+      { country: 'Germany', capital: 'Berlin' },
+      { country: 'USA', capital: 'Washington' },
+      { country: 'China', capital: 'Beijing' }
     ]"
     :options="{...options}" // [!code focus]
   />

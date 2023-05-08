@@ -1,24 +1,30 @@
-import { unref } from 'vue'
-import type { MaybeRef, TableRow } from '../types'
+import { computed, unref } from 'vue'
 
-export function useExports(rowsRef: MaybeRef<TableRow[]>, fieldsToExportRef: MaybeRef<string[]>) {
-  function tableToString() {
-    const rows = unref(rowsRef)
-    const fieldsToExport = unref(fieldsToExportRef)
-    const headers = fieldsToExport.join(';')
-    const lines = rows.map((r) => fieldsToExport.map((f) => r[f]).join(';')).join('\n')
+import type { Column, MaybeRef, Row } from '../types'
 
-    return headers.concat('\n', lines)
-  }
+export function useExports(colsRef: MaybeRef<Column[]>, rowsRef: MaybeRef<Row[]>) {
+  const fields = computed(() =>
+    unref(colsRef)
+      .filter((c) => !c.noExport)
+      .map((c) => c.field)
+  )
+
+  const asString = computed(() =>
+    fields.value.join(';').concat(
+      '\n',
+      unref(rowsRef)
+        .map((r) => fields.value.map((f) => r[f]).join(';'))
+        .join('\n')
+    )
+  )
 
   function exportCSV() {
-    const csvContent = tableToString()
     const linkEl = document.createElement('a')
-    linkEl.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csvContent)
+    linkEl.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(asString.value)
     linkEl.download = 'export.csv'
     linkEl.click()
     linkEl.remove()
   }
 
-  return { tableToString, exportCSV }
+  return { asString, exportCSV }
 }

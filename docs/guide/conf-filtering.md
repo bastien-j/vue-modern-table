@@ -21,10 +21,10 @@ To enable / disable rows filtering, simply set the `enableFiltering` option to e
       { label: 'Capital', field: 'capital' }
     ]"
     :rows="[
-      { key: <random-unique-key>, country: 'Ukraine', capital: 'Kiev' },
-      { key: <random-unique-key>, country: 'France', capital: 'Paris' },
-      { key: <random-unique-key>, country: 'Germany', capital: 'Berlin' },
-      { key: <random-unique-key>, country: 'USA', capital: 'Washington' }
+      { country: 'Ukraine', capital: 'Kiev' },
+      { country: 'France', capital: 'Paris' },
+      { country: 'Germany', capital: 'Berlin' },
+      { country: 'USA', capital: 'Washington' }
     ]"
     :options="{ enableFiltering: true }" // [!code focus]
   />
@@ -38,10 +38,10 @@ To enable / disable rows filtering, simply set the `enableFiltering` option to e
     { label: 'Capital', field: 'capital' }
   ]"
   :rows="[
-    { key: 0, country: 'Ukraine', capital: 'Kiev' },
-    { key: 1, country: 'France', capital: 'Paris' },
-    { key: 2, country: 'Germany', capital: 'Berlin' },
-    { key: 3, country: 'USA', capital: 'Washington' }
+    { country: 'Ukraine', capital: 'Kiev' },
+    { country: 'France', capital: 'Paris' },
+    { country: 'Germany', capital: 'Berlin' },
+    { country: 'USA', capital: 'Washington' }
   ]"
   :options="{ enableFiltering: true }"
 />
@@ -59,10 +59,10 @@ By default, every columns are sortable. You can limit that with the `noFilter` c
       { label: 'Capital (no filter)', field: 'capital', noFilter: true }
     ]"
     :rows="[
-      { key: <random-unique-key>, country: 'Ukraine', capital: 'Kiev' },
-      { key: <random-unique-key>, country: 'France', capital: 'Paris' },
-      { key: <random-unique-key>, country: 'Germany', capital: 'Berlin' },
-      { key: <random-unique-key>, country: 'USA', capital: 'Washington' }
+      { country: 'Ukraine', capital: 'Kiev' },
+      { country: 'France', capital: 'Paris' },
+      { country: 'Germany', capital: 'Berlin' },
+      { country: 'USA', capital: 'Washington' }
     ]"
     :options="{ enableFiltering: true }" // [!code focus]
   />
@@ -76,10 +76,10 @@ By default, every columns are sortable. You can limit that with the `noFilter` c
     { label: 'Capital (no filter)', field: 'capital', noFilter: true }
   ]"
   :rows="[
-    { key: 0, country: 'Ukraine', capital: 'Kiev' },
-    { key: 1, country: 'France', capital: 'Paris' },
-    { key: 2, country: 'Germany', capital: 'Berlin' },
-    { key: 3, country: 'USA', capital: 'Washington' }
+    { country: 'Ukraine', capital: 'Kiev' },
+    { country: 'France', capital: 'Paris' },
+    { country: 'Germany', capital: 'Berlin' },
+    { country: 'USA', capital: 'Washington' }
   ]"
   :options="{ enableFiltering: true }"
 />

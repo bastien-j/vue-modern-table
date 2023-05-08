@@ -63,6 +63,13 @@ When using pagination, used to set the number of rows per page to display.
 
 Refer to [Pagination](../guide/conf-pagination) to learn more.
 
+## rowKey
+
+- Type: `string`
+- Default: `id`
+
+Field to identify each row. It's only used for internal `v-for` loops.
+
 ## theme
 
 - Type: `string`

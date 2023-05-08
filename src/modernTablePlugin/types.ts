@@ -1,4 +1,5 @@
 import type { Ref } from 'vue'
+
 import type ModernTable from './ModernTable.vue'
 
 export type PluginOptions = {
@@ -7,13 +8,13 @@ export type PluginOptions = {
   enableFiltering: boolean
   enablePagination: boolean
   enableSorting: boolean
-  fixWidth: boolean
   initialPage: number
   pageLength: number
+  rowKey: string
   theme: 'auto' | 'dark' | 'light'
 }
 export type TableOptions = Partial<PluginOptions>
-export type TableColumn = {
+export type Column = {
   label: string
   field: string
   noFilter?: boolean
@@ -21,10 +22,11 @@ export type TableColumn = {
   noSort?: boolean
   shrink?: boolean
 }
-export type TableRow = {
-  key: string | number
+export type Row = {
   [key: string]: any
 }
+export type SortOption = 'asc' | 'desc'
+export type SortedField = { field: Column['field']; sort: SortOption }
 export interface PageInfoEvent {
   length: number
   pageIndex: number

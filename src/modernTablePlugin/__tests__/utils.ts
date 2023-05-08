@@ -7,5 +7,8 @@ export const DefaultPluginConfig: PluginOptions = {
   enableSorting: true,
   initialPage: 0,
   pageLength: 5,
-  theme: 'auto'
+  theme: 'auto',
+  enableExport: false,
+  fixWidth: false,
+  rowKey: ''
 }
