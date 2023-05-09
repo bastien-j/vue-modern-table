@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 import { columns, rows } from './assets/data.json'
 import { columns as columns2, rows as rows2 } from './assets/data2.json'
@@ -17,6 +17,9 @@ const tableOptions = ref<TableOptions>({
   theme: 'auto'
 })
 const checkedRows = ref([rows[1]])
+
+const filterRows = ref(false)
+const filtered = computed(() => filterRows.value ? rows.filter(r => r.gender === 'Female') : rows)
 
 const deleteRow = (id: string | number) => {
   console.log(`deleting row with id ${id}`)
@@ -71,7 +74,7 @@ const showRow = (id: string | number) => {
     <div class="table-wrapper">
       <ModernTable
         :columns="columns"
-        :rows="rows"
+        :rows="filtered"
         :options="tableOptions"
         v-model:checked-rows="checkedRows"
       >
@@ -85,6 +88,7 @@ const showRow = (id: string | number) => {
       </ModernTable>
     </div>
     {{ checkedRows }}
+    <button @click="filterRows = !filterRows">toggle filter rows</button>
     <div class="table-wrapper">
       <ModernTable :columns="columns2" :rows="rows2" :options="tableOptions">
         <template #actions="{ row }">

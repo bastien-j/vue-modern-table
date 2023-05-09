@@ -12,7 +12,7 @@ export function useTable(
   rowsRef: MaybeRef<Row[]>,
   optionsRef: MaybeRef<PluginOptions>
 ) {
-  const rows = ref(unref(rowsRef).slice())
+  const rows = computed(() => unref(rowsRef).slice())
   const options = computed(() => unref(optionsRef))
 
   const filter = ref('')
