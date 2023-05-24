@@ -7,9 +7,9 @@ const filterString = (value: string, filter: string) =>
 const sortASC = (a: any, b: any) => (a > b ? 1 : a < b ? -1 : 0)
 const sortDESC = (a: any, b: any) => (a > b ? -1 : a < b ? 1 : 0)
 
-export function useTable(
+export function useTable<T extends Row>(
   colsRef: MaybeRef<Column[]>,
-  rowsRef: MaybeRef<Row[]>,
+  rowsRef: MaybeRef<T[]>,
   optionsRef: MaybeRef<PluginOptions>
 ) {
   const rows = computed(() => unref(rowsRef).slice())

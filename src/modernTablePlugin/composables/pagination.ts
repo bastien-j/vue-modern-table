@@ -2,7 +2,7 @@ import { computed, ref, unref } from 'vue'
 
 import type { MaybeRef, PluginOptions, Row } from '../types'
 
-export function usePagination(rowsRef: MaybeRef<Row[]>, optionsRef: MaybeRef<PluginOptions>) {
+export function usePagination<T extends Row>(rowsRef: MaybeRef<T[]>, optionsRef: MaybeRef<PluginOptions>) {
   const options = computed(() => unref(optionsRef))
 
   const currentPage = ref(options.value.initialPage)

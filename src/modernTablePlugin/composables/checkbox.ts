@@ -1,10 +1,11 @@
+import type { Ref } from 'vue'
 import { computed, ref, unref, watch } from 'vue'
 
 import type { MaybeRef, Row } from '../types'
 
-export function useCheckbox(rowsRef: MaybeRef<Row[]>) {
+export function useCheckbox<T extends Row>(rowsRef: MaybeRef<T[]>) {
   const rows = computed(() => unref(rowsRef))
-  const checkedRows = ref<Row[]>([])
+  const checkedRows = ref<T[]>([]) as Ref<T[]>
 
   const allRowsChecked = computed(() =>
     !checkedRows.value.length || checkedRows.value.length !== rows.value.length

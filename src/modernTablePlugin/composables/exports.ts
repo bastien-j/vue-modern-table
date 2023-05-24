@@ -2,7 +2,7 @@ import { computed, unref } from 'vue'
 
 import type { Column, MaybeRef, Row } from '../types'
 
-export function useExports(colsRef: MaybeRef<Column[]>, rowsRef: MaybeRef<Row[]>) {
+export function useExports<T extends Row>(colsRef: MaybeRef<Column[]>, rowsRef: MaybeRef<T[]>) {
   const fields = computed(() =>
     unref(colsRef)
       .filter((c) => !c.noExport)

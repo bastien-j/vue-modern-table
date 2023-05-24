@@ -31,6 +31,10 @@ const classes = computed(() => {
 
   position: relative;
 
+  :deep(.modern-table-cell-content) {
+    white-space: nowrap;
+  }
+
   &.sortable {
     cursor: pointer;
     padding-right: calc(2 * var(--arrow-size) + 2 * var(--arrow-padding));
@@ -67,7 +71,6 @@ const classes = computed(() => {
 
     :deep(.modern-table-cell-content) {
       padding-right: 0;
-      white-space: nowrap;
     }
   }
 

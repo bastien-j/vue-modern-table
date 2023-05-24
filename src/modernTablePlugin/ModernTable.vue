@@ -1,23 +1,24 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="T extends Row">
 import { computed, inject, toRefs } from 'vue'
 
 import TableActions from './components/TableActions.vue'
 import TableComponent from './components/TableComponent.vue'
 import { useExports } from './composables/exports'
 import { useTable } from './composables/table'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { type Column, injectionKey, type PluginOptions, type Row, type TableOptions } from './types'
 
 const props = withDefaults(
   defineProps<{
-    checkedRows?: Row[]
+    checkedRows?: T[]
     columns: Column[]
     options?: TableOptions
-    rows?: Row[]
+    rows?: T[]
   }>(),
   { rows: () => [] }
 )
 defineEmits<{
-  (e: 'update:checked-rows', rows: Row[]): void
+  (e: 'update:checked-rows', rows: T[]): void
 }>()
 
 const globalOptions = inject(injectionKey) as PluginOptions

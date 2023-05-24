@@ -1,8 +1,9 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="T extends Row">
 import { toRefs, watchEffect } from 'vue'
 
 import { useCheckbox } from '../composables/checkbox'
 import { usePagination } from '../composables/pagination'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { Column, PageInfoEvent, PluginOptions, Row, SortedField } from '../types'
 import TableCell from './TableCell.vue'
 import TableHeaderCell from './TableHeaderCell.vue'
@@ -10,17 +11,17 @@ import TablePaginator from './TablePaginator.vue'
 import TableRow from './TableRow.vue'
 
 const props = defineProps<{
-  checkedRows?: Row[]
+  checkedRows?: T[]
   cols: Column[]
   options: PluginOptions
   rowKey?: string
-  rows: Row[]
+  rows: T[]
   sortedFields: SortedField[]
 }>()
 const emits = defineEmits<{
   (e: 'page', event: PageInfoEvent): void
   (e: 'sort-field', field: string): void
-  (e: 'update:checked-rows', rows: Row[]): void
+  (e: 'update:checked-rows', rows: T[]): void
 }>()
 
 const { rows, options } = toRefs(props)

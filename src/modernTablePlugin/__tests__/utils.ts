@@ -9,6 +9,5 @@ export const DefaultPluginConfig: PluginOptions = {
   pageLength: 5,
   theme: 'auto',
   enableExport: false,
-  fixWidth: false,
   rowKey: ''
 }

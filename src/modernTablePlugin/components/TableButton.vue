@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-  <button class="table-button">
+  <button type="button" class="table-button">
     <slot></slot>
   </button>
 </template>
@@ -15,6 +15,7 @@
   padding: 0.5rem;
   color: var(--t-btn-clr);
   transition: var(--transition-duration);
+  -webkit-user-select: none;
   user-select: none;
 
   &:disabled {
