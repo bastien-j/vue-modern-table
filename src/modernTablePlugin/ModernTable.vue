@@ -20,6 +20,9 @@ const props = withDefaults(
 defineEmits<{
   (e: 'update:checked-rows', rows: T[]): void
 }>()
+defineSlots<{
+  [key: string]: (props: { field: string; row: T; value: any }) => any
+}>()
 
 const globalOptions = inject(injectionKey) as PluginOptions
 const mergedOptions = computed(() => ({ ...globalOptions, ...props.options }))
@@ -43,7 +46,11 @@ const { exportCSV } = useExports(columns, sortedRows)
       :checked-rows="checkedRows"
       @update:checked-rows="$emit('update:checked-rows', $event)"
     >
-      <template v-for="col in columns" :key="col.field" #[col.field]="{ field, value, col: _col, row }">
+      <template
+        v-for="col in columns"
+        :key="col.field"
+        #[col.field]="{ field, value, col: _col, row }"
+      >
         <slot :name="_col.field" :field="field" :value="value" :row="row" />
       </template>
     </TableComponent>

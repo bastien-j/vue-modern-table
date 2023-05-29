@@ -8,9 +8,12 @@
     "vue table",
     "vue datatable"
   ],
-  "homepage": "https://github.com/bastien-j/vue-modern-table",
+  "homepage": "https://bastien-j.github.io/vue-modern-table",
   "bugs": {
     "url": "https://github.com/bastien-j/vue-modern-table/issues"
+  },
+  "repository": {
+    "url": "https://github.com/bastien-j/vue-modern-table"
   },
   "license": "MIT",
   "type": "module",
@@ -45,7 +48,7 @@
   "dependencies": {
     "@material-design-icons/font": "^0.14.3",
     "defu": "^6.1.2",
-    "vue": "^3.2.47"
+    "vue": "^3.3.4"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.2.0",
