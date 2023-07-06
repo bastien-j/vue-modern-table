@@ -46,7 +46,8 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
         { text: 'Filtering', link: '/guide/conf-filtering' },
         { text: 'Pagination', link: '/guide/conf-pagination' },
         { text: 'Theme', link: '/guide/conf-theme' },
-        { text: 'Export', link: '/guide/conf-export' }
+        { text: 'Export', link: '/guide/conf-export' },
+        { text: 'Messages', link: '/guide/conf-messages' }
       ]
     },
     {
