@@ -17,7 +17,7 @@ defineEmits<{
     <input
       v-if="options.enableFiltering"
       type="text"
-      placeholder="Filter"
+      :placeholder="options.messages.actions.filter"
       :value="filter"
       @input="$emit('update:filter', ($event.target as HTMLInputElement).value)"
     />

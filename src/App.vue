@@ -14,6 +14,11 @@ const tableOptions = ref<TableOptions>({
   enablePagination: true,
   enableSorting: true,
   pageLength: PAGE_LENGTH,
+  messages: {
+    actions: {
+      filter: 'Recherche'
+    }
+  },
   theme: 'auto'
 })
 const checkedRows = ref([rows[1]])
@@ -78,11 +83,11 @@ const showRow = (id: string | number) => {
         :options="tableOptions"
         v-model:checked-rows="checkedRows"
       >
-        <template #actions="{ row: { id } }">
+        <template #actions="{ row }">
           <div class="buttons">
-            <button @click="deleteRow(id)"><span class="material-icons">delete</span></button>
-            <button @click="editRow(id)"><span class="material-icons">edit</span></button>
-            <button @click="showRow(id)"><span class="material-icons">visibility</span></button>
+            <button @click="deleteRow(row.id)"><span class="material-icons">delete</span></button>
+            <button @click="editRow(row.id)"><span class="material-icons">edit</span></button>
+            <button @click="showRow(row.id)"><span class="material-icons">visibility</span></button>
           </div>
         </template>
       </ModernTable>

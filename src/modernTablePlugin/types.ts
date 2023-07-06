@@ -2,6 +2,12 @@ import type { Ref } from 'vue'
 
 import type ModernTable from './ModernTable.vue'
 
+export type PluginMessages = {
+  actions: {
+    filter: string
+  }
+}
+
 export type PluginOptions = {
   enableCheckbox: boolean
   enableExport: boolean
@@ -9,6 +15,7 @@ export type PluginOptions = {
   enablePagination: boolean
   enableSorting: boolean
   initialPage: number
+  messages: PluginMessages
   pageLength: number
   rowKey: string
   theme: 'auto' | 'dark' | 'light'

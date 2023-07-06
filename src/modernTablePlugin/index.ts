@@ -12,6 +12,11 @@ const defaultOptions: PluginOptions = {
   enablePagination: true,
   enableSorting: true,
   initialPage: 0,
+  messages: {
+    actions: {
+      filter: 'Filter'
+    }
+  },
   pageLength: 5,
   rowKey: 'id',
   theme: 'auto'
